@@ -52,9 +52,9 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
-    public function actionPrototype()
+    public function actionPrototype($id = 1)
     {
-        return $this->render('prototype');
+        return $this->render('prototype_'.$id);
     }
 
     public function actionLogin()

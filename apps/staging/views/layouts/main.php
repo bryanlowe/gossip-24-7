@@ -26,5 +26,13 @@ AppAsset::register($this);
 
 <?php $this->endBody() ?>
 </body>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(".flexslider").flexslider({
+            animation: "slide",
+            slideshow: false
+        });
+    });
+</script>
 </html>
 <?php $this->endPage() ?>
