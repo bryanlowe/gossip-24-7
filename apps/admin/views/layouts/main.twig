@@ -1,0 +1,40 @@
+{{ use('app/assets/AppAsset')}}
+{{ register_app_asset() }}
+{{ this.beginPage() }}
+<!DOCTYPE html>
+<html lang="{{app.language}}">
+<head>
+    <meta charset="{{app.charset}}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {{ html.csrfMetaTags() | raw }}
+    <title>{{ html.encode(this.title) }}</title>
+    {{ this.head() }}
+</head>
+<body>
+{{ this.beginBody() }}
+    <nav style="margin-bottom: 0" role="navigation" class="navbar navbar-default navbar-static-top">
+        <div class="navbar-header">
+            <a href="/" class="navbar-brand">Gossip 24/7 Admin</a>
+        </div>
+        <!-- /.navbar-header -->
+
+        <div role="navigation" class="navbar-default sidebar">
+            <div class="sidebar-nav navbar-collapse">
+                <ul id="side-menu" class="nav in">
+                    <li>
+                        <a href="/rss" class="active"><i class="fa fa-rss fa-fw"></i> RSS Feeds</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.sidebar-collapse -->
+        </div>
+        <!-- /.navbar-static-side -->
+    </nav>
+    <div id="page-wrapper">
+        {{ content | raw }}
+    </div>
+
+{{ this.endBody() }}
+</body>
+</html>
+{{ this.endPage() }}

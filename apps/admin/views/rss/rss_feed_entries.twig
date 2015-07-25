@@ -1,0 +1,52 @@
+{% if rss_feed %}
+	{% for entry in rss_feed %}
+		<div class="col-lg-12" data-story="{{loop.index}}">
+			<div class="col-lg-3">
+				<div>
+					<label for="title">Title</label><br />
+					<input class="form-control" name="title" value="{{entry.title}}" />
+				</div>
+				<div class="clear"><br /></div>
+				<div>
+					<label for="link">Link</label><br />
+					<input class="form-control" name="link" value="{{entry.link}}" readonly />
+				</div>
+				<div class="clear"><br /></div>
+				<div>
+					<label for="story_date">Date</label><br />
+					<input class="form-control" name="story_date" value="{{entry.pubDate}}" readonly />
+				</div>
+				<div class="clear"><br /></div>
+				<div>
+					<label for="story_type">Story Type</label><br />
+					<select class="form-control" name="story_type">
+						<option value="FEATURED">Featured Story</option>
+						<option value="SPOTLIGHT">Main Story</option>
+						<option value="SIDE">Side Story</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-lg-9">
+				<label for="description">Description</label><br />
+				<textarea class="form-control" name="description">{{entry.description|striptags|trim}}</textarea>
+			</div>
+			<div class="clear"><br /></div>
+			<div class="pull-right" style="margin-right: 20px;">
+				<input type="button" class="btn btn-info" value="SAVE STORY" data-story="{{loop.index}}" />
+			</div>
+		</div>
+		<div class="clear"><br /><hr></div>
+	{% endfor %}
+	<script>
+	<!--
+		$('input[data-story][type="button"]').click(function(){
+            var story = $(this).data('story');
+            $('[data-story="'+story+'"] [name="title"], [data-story="'+story+'"] [name="description"]').prop('readonly', true);
+            $('[data-story="'+story+'"] [name="story_type"]').prop('disabled', true);
+            $(this).replaceWith('<button class="btn btn-success">SAVED!</button>');
+        });
+	//-->
+	</script>
+{% else %}
+	<p align="center"><strong>Move along! Nothing to see here!</strong></p>
+{% endif %}

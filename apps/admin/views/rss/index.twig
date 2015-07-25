@@ -1,0 +1,40 @@
+{{ set(this, 'title', 'Gossip 24/7 Admin RSS Feed') }}
+<div class="row">
+	<div class="col-lg-3">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Search RSS Feeds</h3>
+			</div>
+			<div class="panel-body">
+				<div>
+					<label for="rss_select">Select a RSS Feed to View</label><br />
+					<select class="form-control" name="rss_select">
+						<option value="">Please select a RSS Feed</option>
+						{% for feed in rss_feeds %}
+							<option value="{{ feed.url }}">{{ feed.name }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="clear"><hr></div>
+				<div>
+					<label for="rss_url">Or Enter an RSS URL</label><br />
+					<input class="form-control" name="rss_url" placeholder="Enter RSS URL Here" />
+				</div>
+				<div class="clear"><hr></div>
+				<input type="button" class="btn btn-info" value="PULL FEED" name="rssBtn">
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-9">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Generated Stories</h3>
+			</div>
+			<div class="panel-body">
+				<div id="story_list">
+					{% include "rss_feed_entries.twig" %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
