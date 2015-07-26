@@ -40,10 +40,8 @@
 	<script>
 	<!--
 		$('input[data-story][type="button"]').click(function(){
-            var story = $(this).data('story');
-            $('[data-story="'+story+'"] [name="title"], [data-story="'+story+'"] [name="description"]').prop('readonly', true);
-            $('[data-story="'+story+'"] [name="story_type"]').prop('disabled', true);
-            $(this).replaceWith('<button class="btn btn-success">SAVED!</button>');
+            var story_num = $(this).data('story');
+            saveFeed(story_num);
         });
 	//-->
 	</script>

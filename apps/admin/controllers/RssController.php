@@ -5,8 +5,7 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
+use app\models\Story;
 
 class RssController extends Controller
 {
@@ -44,8 +43,7 @@ class RssController extends Controller
             'url' => 'http://blindgossip.com/?feed=rss2'
         ]
     ];
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -67,8 +65,7 @@ class RssController extends Controller
         ];
     }
 
-    public function actions()
-    {
+    public function actions() {
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
@@ -76,17 +73,14 @@ class RssController extends Controller
         ];
     }
 
-    public function actionIndex()
-    {
+    public function actionIndex() {
         return $this->render('index.twig', [
             'rss_feeds' => $this->rss_feeds
         ]);
     }
 
-    public function actionLoad()
-    {
-        $request = Yii::$app->request;
-        $url = $request->post('url');
+    public function actionLoad() {
+        $url = Yii::$app->request->post('url');
         if($url != 'N/A'){
             $rss = new \rss_php;
             $rss->load($url);
@@ -97,5 +91,15 @@ class RssController extends Controller
         } else {
             echo $this->renderPartial('rss_feed_entries.twig');
         }       
+    }
+
+    public function actionSave() {
+        $model = new Story(['scenario' => Story::SCENARIO_STORY]);
+        $model->attributes = Yii::$app->request->post('story_values');
+        if($model->validate()){
+            echo json_encode(['save_success' => $model->saveStory()]);
+        } else {
+            echo json_encode(['errors' => $model->errors]);
+        }
     }
 }
