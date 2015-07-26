@@ -1,0 +1,19 @@
+{{ set(this, 'title', 'Gossip 24/7 Admin - Story List') }}
+{{ this.registerJsFile('/js/jquery.min.js') }}
+{{ this.registerJsFile('/js/page-scripts/story-list-scripts.js') }}
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Story List</h3>
+			</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-lg-12">
+						{% include "story_list.twig" %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

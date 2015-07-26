@@ -20,12 +20,14 @@ class AppAsset extends AssetBundle
     public $css = [
         '/css/bootstrap.min.css',
         '/css/sb-admin-2.css',
-        '/css/font-awesome.min.css'
+        '/css/font-awesome.min.css',
+        '/css/pure-min.css',
+        '/css/jquery-impromptu.css'
     ];
     public $js = [
         '/js/bootstrap.min.js',
-        '/js/common-functions.js',
-        '/js/page-scripts/rss-feed-scripts.js'
+        '/js/jquery-impromptu.min.js',
+        '/js/common-functions.js'
     ];
     public $depends = [
         'yii\web\YiiAsset'

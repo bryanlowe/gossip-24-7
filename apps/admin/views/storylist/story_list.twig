@@ -1,0 +1,57 @@
+{% if story_list %}
+	<div class="panel-group" id="accordion" aria-multiselectable="true" role="tablist">
+		{% for entry in story_list %}
+			<div data-story="{{entry.story_id}}" class="panel panel-default">
+		        <div id="heading-{{loop.index}}" role="tab" class="panel-heading">
+		          	<h4 class="panel-title">
+		            	<a aria-controls="collapse-{{entry.story_id}}" aria-expanded="false" href="#collapse-{{entry.story_id}}" data-parent="#accordion" data-toggle="collapse" role="button">
+		              		{{entry.title}}
+		            	</a>
+		            	<button class="pull-right" data-story="{{entry.story_id}}" data-visible="{{entry.visible}}" style="margin-top: -5px;">
+		            		{{ entry.visible ? '<i class="fa fa-eye fa-fw"></i>' : '<i class="fa fa-eye-slash fa-fw"></i>' }}		
+						</button>
+		          	</h4>
+		        </div>
+		        <div aria-labelledby="heading-{{entry.story_id}}" role="tabpanel" class="panel-collapse collapse" id="collapse-{{entry.story_id}}">
+		          	<div class="panel-body">
+		            	<div class="row">
+							<div class="col-lg-3">
+								<label for="title">Title</label><br />
+								<input class="form-control" name="title" value="{{entry.title}}" placeholder="Enter your title here" />
+							</div>
+							<div class="col-lg-3">
+								<label for="story_type">Story Type</label><br />
+								<select class="form-control" name="story_type">
+									<option value="FEATURED" {{ entry.story_type == "FEATURED" ? "selected" : "" }}>Featured Story</option>
+									<option value="SPOTLIGHT" {{ entry.story_type == "SPOTLIGHT" ? "selected" : "" }}>Main Story</option>
+									<option value="SIDE" {{ entry.story_type == "SIDE" ? "selected" : "" }}>Side Story</option>
+								</select>
+							</div>
+							<div class="col-lg-3">
+								<label for="link">Link</label><br />
+								<input class="form-control" name="link" value="{{ entry.link == "N/A" ? "http://www.gossip247.com/blog/" ~ entry.story_id : entry.link }}" placeholder="Enter your link here" />
+							</div>
+							<div class="col-lg-3">
+								<label for="date">Date</label><br />
+								<input class="form-control" name="date" value="{{entry.story_date}}" placeholder="Enter your date here" />
+							</div>
+						</div>
+						<div class="clear"><br /></div>
+						<div class="row">
+							<div class="col-lg-12">
+								<label for="description">Description</label><br />
+								<textarea class="form-control" name="description" placeholder="Enter your story here">{{entry.description}}</textarea>
+							</div>
+							<div class="clear"><br /></div>
+							<div class="pull-right" style="margin-right: 20px;">
+								<input type="button" data-story="{{entry.story_id}}" name="saveBtn" class="btn btn-info" value="SAVE STORY" />
+							</div>
+						</div>
+		          	</div>
+		        </div>
+		    </div>
+		{% endfor %}
+	</div>	
+{% else %}
+	<p align="center"><strong>Move along! Nothing to see here!</strong></p>
+{% endif %}

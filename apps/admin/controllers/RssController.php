@@ -2,13 +2,15 @@
 namespace app\controllers;
 require('../vendor/rss_php/rss_php.php');
 use Yii;
+use yii\helpers\Url;
 use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\filters\VerbFilter;
+use yii\web\View;
 use app\models\Story;
 
 class RssController extends Controller
 {
+    // current list of RSS Feeds
     private $rss_feeds = [
         [
             'name' => 'Perez Hilton',
@@ -43,28 +45,7 @@ class RssController extends Controller
             'url' => 'http://blindgossip.com/?feed=rss2'
         ]
     ];
-    public function behaviors() {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['logout'],
-                'rules' => [
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
-    }
-
+    
     public function actions() {
         return [
             'error' => [
@@ -79,6 +60,9 @@ class RssController extends Controller
         ]);
     }
 
+    /**
+     * loads RSS feeds through RSS URL and echos the result
+     */
     public function actionLoad() {
         $url = Yii::$app->request->post('url');
         if($url != 'N/A'){
@@ -93,6 +77,9 @@ class RssController extends Controller
         }       
     }
 
+    /**
+     * Saves the RSS feed entry to the database and echos the result
+     */
     public function actionSave() {
         $model = new Story(['scenario' => Story::SCENARIO_STORY]);
         $model->attributes = Yii::$app->request->post('story_values');

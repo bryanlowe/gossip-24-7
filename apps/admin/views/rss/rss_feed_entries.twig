@@ -4,7 +4,7 @@
 			<div class="col-lg-3">
 				<div>
 					<label for="title">Title</label><br />
-					<input class="form-control" name="title" value="{{entry.title}}" />
+					<input class="form-control" name="title" value="{{entry.title}}" placeholder="Enter your title here" />
 				</div>
 				<div class="clear"><br /></div>
 				<div>
@@ -28,7 +28,7 @@
 			</div>
 			<div class="col-lg-9">
 				<label for="description">Description</label><br />
-				<textarea class="form-control" name="description">{{entry.description|striptags|trim}}</textarea>
+				<textarea class="form-control" name="description" placeholder="Enter your story here">{{entry.description|striptags|trim}}</textarea>
 			</div>
 			<div class="clear"><br /></div>
 			<div class="pull-right" style="margin-right: 20px;">

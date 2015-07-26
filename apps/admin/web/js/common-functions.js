@@ -14,3 +14,27 @@ statusApp = statusApp || (function () {
 
     };
 })();
+
+/**
+ * All impromptu properties are stored here.
+ */
+var popUpProperties = {
+	classes: {
+				box: '',
+				fade: '',
+				prompt: '',
+				close: '',
+				title: 'lead',
+				message: '',
+				buttons: '',
+				button: 'pure-button',
+				defaultButton: 'pure-button-primary'
+			 }
+}
+
+/**
+ * Performs pop up messages using impromptu
+ */
+function popUpMsg(msg){
+	$.prompt(msg, popUpProperties);
+}

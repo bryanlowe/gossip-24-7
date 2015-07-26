@@ -6,6 +6,7 @@
 
 	class Story extends ActiveRecord {
 		const SCENARIO_STORY = 'story';
+		const SCENARIO_STORY_VISIBILITY = 'visible';
 	    const SCENARIO_IMAGES = 'story_image';
 
 	    /**
@@ -14,6 +15,7 @@
 	    public function scenarios() {
 	        $scenarios = parent::scenarios();
 	        $scenarios[self::SCENARIO_STORY] = ['story_id', 'title', 'link', 'description', 'story_date', 'story_type', 'visible'];
+	        $scenarios[self::SCENARIO_STORY_VISIBILITY] = ['story_id', 'visible'];
 	        $scenarios[self::SCENARIO_IMAGES] = ['story_image_id', 'story_id', 'image_name', 'order'];
 	        return $scenarios;
 	    }
@@ -25,7 +27,8 @@
 	        return [
 	            // required
 	            [['story_id', 'title', 'link', 'description', 'story_type'], 'required', 'on' => self::SCENARIO_STORY],
-	            [['story_id', 'image_name'], 'required', 'on' => self::SCENARIO_IMAGES]
+	            [['story_id', 'image_name'], 'required', 'on' => self::SCENARIO_IMAGES],
+	            [['story_id', 'visible'], 'required', 'on' => self::SCENARIO_STORY_VISIBILITY]
 	        ];
 	    }
 
@@ -47,7 +50,24 @@
         		} else {
         			return $db->createCommand()->insert('story', $tempValues)->execute();
         		}	    		
+	    	} else if($this->scenario == self::SCENARIO_STORY_VISIBILITY){
+        		$tempValues = [];
+        		$storyID = $this->attributes['story_id'];
+        		foreach($this->attributes as $key => $value){
+        			if($key != 'story_id' && $value != ""){
+        				$tempValues[$key] = $value;
+        			}
+        		} 
+        		return $db->createCommand()->update('story', $tempValues, 'story_id = '.$storyID)->execute();   		
 	    	}
+	    }
+
+	    /**
+	     * @return boolean success or failure
+	     */
+	    public function loadStories() {
+	    	$db = Yii::$app->db;
+	    	return $db->createCommand('SELECT * FROM story')->queryAll();
 	    }
 	}
 ?>
