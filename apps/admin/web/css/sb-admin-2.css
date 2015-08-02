@@ -373,3 +373,24 @@ textarea.form-control {
     background-color: #fff;
     overflow-y: auto;
 }
+label[for="priority"] {
+    float: left;
+    padding-right: 5px;
+}
+.form-control[type="number"][data-story] {
+    height: 25px;
+    width: 100px;
+}
+@media (max-width: 600px){
+    #accordion [class^="col-lg-"] {
+        padding: 10px 15px;
+    } 
+}
+
+#accordion .panel-default, #accordion .panel-heading {
+    min-height: 43px;
+}
+
+#page-wrapper .row {
+    padding-top: 10px;
+}

@@ -3,14 +3,21 @@
 		{% for entry in story_list %}
 			<div data-story="{{entry.story_id}}" class="panel panel-default">
 		        <div id="heading-{{loop.index}}" role="tab" class="panel-heading">
-		          	<h4 class="panel-title">
-		            	<a aria-controls="collapse-{{entry.story_id}}" aria-expanded="false" href="#collapse-{{entry.story_id}}" data-parent="#accordion" data-toggle="collapse" role="button">
-		              		{{entry.title}}
-		            	</a>
-		            	<button class="pull-right" data-story="{{entry.story_id}}" data-visible="{{entry.visible}}" style="margin-top: -5px;">
+		          	<div class="col-lg-9">
+		          		<h4 class="panel-title">
+			            	<a aria-controls="collapse-{{entry.story_id}}" aria-expanded="false" href="#collapse-{{entry.story_id}}" data-parent="#accordion" data-toggle="collapse" role="button">
+			              		{{entry.title}}
+			            	</a>
+			            </h4>
+			        </div>
+					<div class="col-lg-2">
+						<label for="priority">Priority:</label> <input type="number" data-story="{{entry.story_id}}" data-storypid="{{entry.story_priority_id}}" value="{{entry.priority}}" min="0" class="form-control" name="priority" placeholder="Enter Priority" />
+					</div>
+					<div class="col-lg-1">
+		            	<button data-story="{{entry.story_id}}" data-visible="{{entry.visible}}">
 		            		{{ entry.visible ? '<i class="fa fa-eye fa-fw"></i>' : '<i class="fa fa-eye-slash fa-fw"></i>' }}		
 						</button>
-		          	</h4>
+					</div>
 		        </div>
 		        <div aria-labelledby="heading-{{entry.story_id}}" role="tabpanel" class="panel-collapse collapse" id="collapse-{{entry.story_id}}">
 		          	<div class="panel-body">
@@ -43,6 +50,9 @@
 								<textarea class="form-control" name="description" placeholder="Enter your story here">{{entry.description}}</textarea>
 							</div>
 							<div class="clear"><br /></div>
+							<div class="pull-right" style="margin-right: 20px;">
+								<input type="button" data-story="{{entry.story_id}}" name="deleteBtn" class="btn btn-danger" value="DELETE STORY" />
+							</div>
 							<div class="pull-right" style="margin-right: 20px;">
 								<input type="button" data-story="{{entry.story_id}}" name="saveBtn" class="btn btn-info" value="SAVE STORY" />
 							</div>

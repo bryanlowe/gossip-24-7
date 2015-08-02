@@ -5,6 +5,7 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\Story;
+use app\models\StoryPriority;
 
 class StorylistController extends Controller
 {
@@ -40,10 +41,36 @@ class StorylistController extends Controller
     }
 
     /**
+     * Deletes a story from the database and echos the result
+     */
+    public function actionDelete() {
+        $model = new Story(['scenario' => Story::SCENARIO_STORY_ID]);    
+        $model->attributes = Yii::$app->request->post('story_values');
+        if($model->validate()){
+            echo json_encode(['save_success' => $model->deleteStory()]);
+        } else {
+            echo json_encode(['errors' => $model->errors]);
+        }
+    }
+
+    /**
      * Saves the new story entry to the database and echos the result
      */
     public function actionTogglevisible() {
         $model = new Story(['scenario' => Story::SCENARIO_STORY_VISIBILITY]);
+        $model->attributes = Yii::$app->request->post('story_values');
+        if($model->validate()){
+            echo json_encode(['save_success' => $model->saveStory()]);
+        } else {
+            echo json_encode(['errors' => $model->errors]);
+        }
+    }
+
+    /**
+     * Saves the new story priority entry to the database and echos the result
+     */
+    public function actionPriority() {
+        $model = new StoryPriority(['scenario' => Story::SCENARIO_STORY_PRIORITY]);
         $model->attributes = Yii::$app->request->post('story_values');
         if($model->validate()){
             echo json_encode(['save_success' => $model->saveStory()]);
