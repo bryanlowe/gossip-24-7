@@ -17,12 +17,27 @@
 	    }
 
 	    /**
+	     * @return string the name of the table associated with this ActiveRecord class.
+	     */
+	    public static function tableName(){
+	        return 'story_priority';
+	    }
+
+	    /**
+	     * Creates a relation between story and story priority tables
+	     */
+	    public function getStory(){
+	        return $this->hasOne(Story::className(), ['story_id' => 'story_id']);
+	    }
+
+	    /**
 	     * @return array the validation rules.
 	     */
 	    public function rules() {
 	        return [
 	            // required
-	            [['story_priority_id', 'story_id', 'priority'], 'required', 'on' => self::SCENARIO_STORY_PRIORITY]
+	            [['story_priority_id', 'story_id', 'priority'], 'required', 'on' => self::SCENARIO_STORY_PRIORITY],
+	            [['story_priority_id', 'story_id', 'priority'], 'integer', 'on' => self::SCENARIO_STORY_PRIORITY]
 	        ];
 	    }
 

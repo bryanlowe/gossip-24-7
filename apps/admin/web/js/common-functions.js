@@ -3,12 +3,12 @@
  */
 var statusApp;
 statusApp = statusApp || (function () {
-    var pleaseWaitDiv = $('<div class="modal col-lg-4" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false"><div class="modal-header"><h1>Processing...</h1></div><div class="modal-body"><div class="progress progress-striped active"><div class="progress-bar" style="width: 100%;"></div></div></div></div>');
+    var pleaseWaitDiv = $('#pleaseWaitDialog');
     return {
         showPleaseWait: function() {
-            pleaseWaitDiv.modal();
+            pleaseWaitDiv.modal('show');
         },
-        hidePleaseWait: function () {
+        hidePleaseWait: function() {
             pleaseWaitDiv.modal('hide');
         },
 
@@ -37,4 +37,19 @@ var popUpProperties = {
  */
 function popUpMsg(msg){
 	$.prompt(msg, popUpProperties);
+}
+
+/**
+ * Reports form validation errors
+ */
+function reportFormErrors(errors){
+	var errorMsg = '';
+    for(err in errors){
+        for(var i = 0; i < errors[err].length; i++){
+            errorMsg += '<font color="red">'+errors[err][i]+'</font><br />';
+        }
+    }
+    if(errorMsg != ''){
+        popUpMsg("There were some errors in validation. Please fix and try again.<br /><strong>Errors:</strong><br />"+errorMsg);
+    }
 }

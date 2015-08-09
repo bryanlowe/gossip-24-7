@@ -30,6 +30,9 @@
                     <li>
                         <a href="/storylist" class="active"><i class="fa fa-list fa-fw"></i> Story List</a>
                     </li>
+                    <li>
+                        <a href="/media" class="active"><i class="fa fa-camera fa-fw"></i> Media</a>
+                    </li>
                 </ul>
             </div>
             <!-- /.sidebar-collapse -->
@@ -39,7 +42,7 @@
     <div id="page-wrapper">
         {{ content | raw }}
     </div>
-
+    <div class="modal col-lg-4" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false"><div class="modal-header"><h1>Processing...</h1></div><div class="modal-body"><div class="progress progress-striped active"><div class="progress-bar" style="width: 100%;"></div></div></div></div>
 {{ this.endBody() }}
 </body>
 </html>

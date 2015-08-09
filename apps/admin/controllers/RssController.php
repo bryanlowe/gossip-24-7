@@ -2,11 +2,9 @@
 namespace app\controllers;
 require('../vendor/rss_php/rss_php.php');
 use Yii;
-use yii\helpers\Url;
-use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\web\View;
 use app\models\Story;
+use app\models\StoryPriority;
 
 class RssController extends Controller
 {
@@ -81,12 +79,20 @@ class RssController extends Controller
      * Saves the RSS feed entry to the database and echos the result
      */
     public function actionSave() {
-        $model = new Story(['scenario' => Story::SCENARIO_STORY]);
-        $model->attributes = Yii::$app->request->post('story_values');
-        if($model->validate()){
-            echo json_encode(['save_success' => $model->saveStory()]);
-        } else {
-            echo json_encode(['errors' => $model->errors]);
+        $story_values = Yii::$app->request->post('story_values');
+        $model = new Story;
+        $model->setScenario(Story::SCENARIO_STORY);
+        $model->attributes = $story_values;
+        $result = $model->save();
+        $errors = $model->getErrors();
+        if($result){
+            $storyPriority = new StoryPriority;
+            $storyPriority->setScenario(StoryPriority::SCENARIO_STORY_PRIORITY);
+            $storyPriority->story_id = $model->getPrimaryKey();
+            $storyPriority->priority = 0;
+            $result = $storyPriority->save(true, ['story_id', 'priority']);
+            $errors = $storyPriority->getErrors();
         }
+        echo json_encode(['save_success' => $result, 'errors' => $errors]);
     }
 }

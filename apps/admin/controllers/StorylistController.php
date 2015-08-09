@@ -1,9 +1,7 @@
 <?php
 namespace app\controllers;
 use Yii;
-use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\filters\VerbFilter;
 use app\models\Story;
 use app\models\StoryPriority;
 
@@ -18,8 +16,15 @@ class StorylistController extends Controller
     }
 
     public function actionIndex() {
-        $model = new Story();
-        $story_list = $model->loadStories();
+        // create story list
+        $story_list = Story::find()
+            ->select('story.*')
+            ->innerJoinWith('storyPriority')
+            ->orderBy('story_id DESC')
+            ->asArray()
+            ->limit(30)
+            ->all();
+        // apply story list to the view
         if(count($story_list) > 0){
             return $this->render('index.twig', ['story_list' => $story_list]);
         } else {
@@ -31,51 +36,48 @@ class StorylistController extends Controller
      * Saves the new story entry to the database and echos the result
      */
     public function actionSave() {
-        $model = new Story(['scenario' => Story::SCENARIO_STORY]);    
-        $model->attributes = Yii::$app->request->post('story_values');
-        if($model->validate()){
-            echo json_encode(['save_success' => $model->saveStory()]);
-        } else {
-            echo json_encode(['errors' => $model->errors]);
-        }
+        $story_values = Yii::$app->request->post('story_values');
+        $model = Story::findOne($story_values['story_id']);
+        $model->setScenario(Story::SCENARIO_STORY);
+        $model->attributes = $story_values;
+        echo json_encode(['save_success' => $model->save(true, ['title','story_type','link','description']), 'errors' => $model->getErrors()]);
     }
 
     /**
      * Deletes a story from the database and echos the result
      */
     public function actionDelete() {
-        $model = new Story(['scenario' => Story::SCENARIO_STORY_ID]);    
-        $model->attributes = Yii::$app->request->post('story_values');
-        if($model->validate()){
-            echo json_encode(['save_success' => $model->deleteStory()]);
-        } else {
-            echo json_encode(['errors' => $model->errors]);
+        $story_values = Yii::$app->request->post('story_values');
+        $model = Story::findOne($story_values['story_id']);
+        $result = $model->delete();
+        $errors = $model->getErrors();
+        if($result){
+            $storyPriority = StoryPriority::findOne(['story_id' => $story_values['story_id']]);
+            $result = $storyPriority->delete();
+            $errors = $storyPriority->getErrors();
         }
+        echo json_encode(['save_success' => $result, 'errors' => $errors]);
     }
 
     /**
      * Saves the new story entry to the database and echos the result
      */
-    public function actionTogglevisible() {
-        $model = new Story(['scenario' => Story::SCENARIO_STORY_VISIBILITY]);
-        $model->attributes = Yii::$app->request->post('story_values');
-        if($model->validate()){
-            echo json_encode(['save_success' => $model->saveStory()]);
-        } else {
-            echo json_encode(['errors' => $model->errors]);
-        }
+    public function actionVisible() {
+        $story_values = Yii::$app->request->post('story_values');
+        $model = Story::findOne($story_values['story_id']);
+        $model->setScenario(Story::SCENARIO_STORY_VISIBILITY);
+        $model->visible = $story_values['visible'];
+        echo json_encode(['save_success' => $model->save(true, ['visible']), 'errors' => $model->getErrors()]);
     }
 
     /**
      * Saves the new story priority entry to the database and echos the result
      */
     public function actionPriority() {
-        $model = new StoryPriority(['scenario' => Story::SCENARIO_STORY_PRIORITY]);
-        $model->attributes = Yii::$app->request->post('story_values');
-        if($model->validate()){
-            echo json_encode(['save_success' => $model->saveStory()]);
-        } else {
-            echo json_encode(['errors' => $model->errors]);
-        }
+        $story_values = Yii::$app->request->post('story_values');
+        $model = StoryPriority::findOne($story_values['story_priority_id']);
+        $model->setScenario(StoryPriority::SCENARIO_STORY_PRIORITY);
+        $model->priority = $story_values['priority'];
+        echo json_encode(['save_success' => $model->save(true, ['priority']), 'errors' => $model->getErrors()]);
     }
 }

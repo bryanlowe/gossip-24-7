@@ -30,32 +30,22 @@ $(function() {
 function saveFeed(story_num){
     statusApp.showPleaseWait();
     var values = {};
-    values['story_id'] = 0;
     values['title'] = $('[data-story="'+story_num+'"] [name="title"]').val();
     values['link'] = $('[data-story="'+story_num+'"] [name="link"]').val();
     values['description'] = $('[data-story="'+story_num+'"] [name="description"]').val();
-    values['story_date'] = $('[data-story="'+story_num+'"] [name="story_date"]').val();
     values['story_type'] = $('[data-story="'+story_num+'"] [name="story_type"]').val();
     values['visible'] = 0;
     $.post('/rss/save', {story_values: values}, function(data){
         data = $.parseJSON(data);
-        if(data.errors){
-            // report validation errors
-            for(err in data.errors){
-                for(var i = 0; i < data.errors[err].length; i++){
-                    $('<font color="red">'+data.errors[err][i]+'</font><br />').insertBefore('[data-story="'+story_num+'"] [name="'+err+'"]');
-                }
-            }
-            popUpMsg("There were some errors in validation. Please fix and try again.");
-        } else if(data.save_success && data.save_success > 0){
+        // report validation errors
+        reportFormErrors(data.errors);
+
+        if(data.save_success){
             // if save is success, give user feedback
             $('[data-story="'+story_num+'"] [name="title"], [data-story="'+story_num+'"] [name="description"]').prop('readonly', true);
             $('[data-story="'+story_num+'"] [name="story_type"]').prop('disabled', true);
             $('[data-story="'+story_num+'"] [type="button"]').replaceWith('<button class="btn btn-success">SAVED!</button>');
             popUpMsg("RSS entry has been saved!");
-        } else {
-            // unsuccessful save feedback
-            popUpMsg("There was a problem with saving this entry. Please try again later.");
         }
     });
     statusApp.hidePleaseWait();

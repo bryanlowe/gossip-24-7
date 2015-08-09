@@ -1,10 +1,9 @@
 <?php
 namespace app\controllers;
 use Yii;
-use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\filters\VerbFilter;
 use app\models\Story;
+use app\models\StoryPriority;
 
 class BlogController extends Controller
 {
@@ -24,14 +23,22 @@ class BlogController extends Controller
      * Saves the new story entry to the database and echos the result
      */
     public function actionSave() {
-        $model = new Story(['scenario' => Story::SCENARIO_STORY]);
-        $newStory = Yii::$app->request->post('story_values');
-        $newStory['story_date'] = date('r');
-        $model->attributes = $newStory;
-        if($model->validate()){
-            echo json_encode(['save_success' => $model->saveStory()]);
-        } else {
-            echo json_encode(['errors' => $model->errors]);
+       $story_values = Yii::$app->request->post('story_values');
+        $model = new Story;
+        $model->setScenario(Story::SCENARIO_STORY);
+        $model->attributes = $story_values;
+        $result = $model->save();
+        $errors = $model->getErrors();
+        if($result){
+            $model->link = 'http://www.gossip247.com/blog/'.$model->getPrimaryKey();
+            $model->save();
+            $storyPriority = new StoryPriority;
+            $storyPriority->setScenario(StoryPriority::SCENARIO_STORY_PRIORITY);
+            $storyPriority->story_id = $model->getPrimaryKey();
+            $storyPriority->priority = 0;
+            $result = $storyPriority->save(true, ['story_id', 'priority']);
+            $errors = $storyPriority->getErrors();
         }
+        echo json_encode(['save_success' => $result, 'errors' => $errors]);
     }
 }

@@ -8,6 +8,11 @@ $config = [
     'bootstrap' => ['log'],
     'layout' => 'main.twig',
     'components' => [
+        'assetManager' => [
+            'bundles' => [
+                'yii\web\JqueryAsset' => false,
+            ],
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => '99ac8eaaf99e3d53f4a928f2613e3471e770ef13',

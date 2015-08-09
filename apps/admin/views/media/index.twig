@@ -1,0 +1,31 @@
+{{ set(this, 'title', 'Gossip 24/7 Admin - Media') }}
+{{ this.registerCssFile('/css/uploadifive.css') }}
+{{ this.registerJsFile('/js/jquery.min.js') }}
+{{ this.registerJsFile('/js/jquery.uploadifive.min.js') }}
+{{ this.registerJsFile('/js/page-scripts/media-scripts.js') }}
+<div class="row">
+	<div class="col-lg-3">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Story List</h3>
+			</div>
+			<div class="panel-body">
+				<div class="list-group">
+					{% include "story_list.twig" %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-9">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Media Assets</h3>
+			</div>
+			<div class="panel-body">
+				<div id="media_assets" class="row">
+					{% include "media_assets.twig" %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

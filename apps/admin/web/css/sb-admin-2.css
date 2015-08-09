@@ -394,3 +394,11 @@ label[for="priority"] {
 #page-wrapper .row {
     padding-top: 10px;
 }
+
+.panel-green a {
+    color: #fff;
+}
+
+.panel-green i.fa {
+    color: #333;
+}
