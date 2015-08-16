@@ -1,20 +1,25 @@
 {% if story_list %}
 	<div class="panel-group" id="accordion" aria-multiselectable="true" role="tablist">
 		{% for entry in story_list %}
-			<div data-story="{{entry.story_id}}" class="panel {{ entry.story_type == "SPOTLIGHT" ? "panel-green" : "panel-default" }}">
+			<div data-storypid="{{entry.storyPriority.story_priority_id}}" data-story="{{entry.story_id}}" class="panel 
+				{% if entry.story_type == "SPOTLIGHT" %}
+					panel-green
+				{% elseif entry.story_type == "FEATURED" %}
+					panel-info
+				{% else %}
+					panel-default
+				{% endif %}
+			">
 		        <div id="heading-{{loop.index}}" role="tab" class="panel-heading">
-		          	<div class="col-lg-6">
+		          	<div class="col-lg-8">
 		          		<h4 class="panel-title">
 			            	<a aria-controls="collapse-{{entry.story_id}}" aria-expanded="false" href="#collapse-{{entry.story_id}}" data-parent="#accordion" data-toggle="collapse" role="button">
-			            		<label for="title">Title:</label> {{ entry.title|length > 50 ? entry.title|slice(0, 50) ~ '...' : entry.title  }}
+			            		<label for="title">Title:</label> {{ entry.title|length > 75 ? entry.title|slice(0, 75) ~ '...' : entry.title  }}
 			            	</a>
 			            </h4>
 			        </div>
 			        <div class="col-lg-3 story_date">
 						<label for="date">Date:</label> {{ entry.story_date != "" ? entry.story_date : "N/A" }}
-					</div>
-					<div class="col-lg-2">
-						<label for="priority">Priority:</label> <input type="number" data-story="{{entry.story_id}}" data-storypid="{{entry.storyPriority.story_priority_id}}" value="{{entry.storyPriority.priority}}" min="0" max="30" class="form-control" name="priority" placeholder="Enter Priority" />
 					</div>
 					<div class="col-lg-1">
 		            	<button data-story="{{entry.story_id}}" data-visible="{{entry.visible}}">
@@ -33,7 +38,7 @@
 								<label for="story_type">Story Type</label><br />
 								<select class="form-control" name="story_type">
 									<option value="FEATURED" {{ entry.story_type == "FEATURED" ? "selected" : "" }}>Featured Story</option>
-									<option value="SPOTLIGHT" {{ entry.story_type == "SPOTLIGHT" ? "selected" : "" }}>Main Story</option>
+									<option value="SPOTLIGHT" {{ entry.story_type == "SPOTLIGHT" ? "selected" : "" }}>Spotlight Story</option>
 									<option value="SIDE" {{ entry.story_type == "SIDE" ? "selected" : "" }}>Side Story</option>
 								</select>
 							</div>

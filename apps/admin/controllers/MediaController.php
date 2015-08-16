@@ -42,7 +42,7 @@ class MediaController extends Controller
         // create asset list
         $media_assets = [];
         $media_assets['story_id'] = $story_values['story_id'];
-        $image_list = StoryImage::findAll(['story_id' => $story_values['story_id']]);
+        $image_list = StoryImage::find()->where(['story_id' => $story_values['story_id']])->orderBy('order ASC')->asArray()->all();
         $media_assets['images'] = $image_list;
 
         // apply media assets to the view
@@ -62,6 +62,33 @@ class MediaController extends Controller
     }
 
     /**
+     * Updates the image order to the database and echos the result
+     */
+    public function actionOrder() {
+        $story_values = Yii::$app->request->post('story_values');
+        if(($maxStories = count($story_values)) > 0){
+            $save_success = 0;
+            $errors = [];
+            $i = 0;
+            do{
+                $model = StoryImage::findOne($story_values[$i]['story_image_id']);
+                $model->setScenario(StoryImage::SCENARIO_STORY_IMAGE_ORDER);
+                if($model->order != $story_values[$i]['order']){
+                    $model->order = $story_values[$i]['order'];
+                    $save_success = $model->save(true, ['order']);
+                    $errors = $model->getErrors();
+                } else {
+                    $save_success = 1;  
+                }
+                $i++;
+            } while($i < $maxStories && $save_success);
+            echo json_encode(['save_success' => $save_success, 'errors' => $errors]);
+        } else {
+            echo json_encode(['save_success' => 1, 'errors' => []]);
+        }
+    }
+
+    /**
      * uploads files to the targeted folder
      */
     public function actionUpload() {
@@ -72,6 +99,7 @@ class MediaController extends Controller
             $model->imageFile = UploadedFile::getInstanceByName('StoryImage[imageFile]');
             $model->story_id = Yii::$app->request->post('story_id');
             $model->image_name = $model->imageFile->baseName.'.'.$model->imageFile->extension;
+            $model->order = 100;
             if($model->upload()){
                 echo json_encode(['save_success' => $model->save(), 'errors' => $model->getErrors()]);
             } else {

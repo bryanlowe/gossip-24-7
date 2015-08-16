@@ -35,7 +35,7 @@
 	    public function scenarios() {
 	        $scenarios = parent::scenarios();
 	        $scenarios[self::SCENARIO_STORY] = ['story_id', 'title', 'link', 'description', 'story_date', 'story_type', 'visible'];
-	        $scenarios[self::SCENARIO_STORY_VISIBILITY] = ['story_id', 'visible'];
+	        $scenarios[self::SCENARIO_STORY_VISIBILITY] = ['story_id', 'visible', 'story_date'];
 	        return $scenarios;
 	    }
 

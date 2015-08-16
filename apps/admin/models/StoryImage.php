@@ -8,6 +8,7 @@
 	class StoryImage extends ActiveRecord {
 		public $imageFile;
 		const SCENARIO_STORY_IMAGE = 'story_image';
+		const SCENARIO_STORY_IMAGE_ORDER = 'order';
 
 	    /**
 	     * @return array the scenarios.
@@ -15,6 +16,7 @@
 	    public function scenarios() {
 	        $scenarios = parent::scenarios();
 	        $scenarios[self::SCENARIO_STORY_IMAGE] = ['story_image_id', 'story_id', 'image_name', 'order'];
+	        $scenarios[self::SCENARIO_STORY_IMAGE] = ['story_image_id', 'order'];
 	        return $scenarios;
 	    }
 
@@ -39,6 +41,7 @@
 	        return [
 	            // required
 	            [['story_id', 'image_name'], 'required', 'on' => self::SCENARIO_STORY_IMAGE],
+	            [['story_image_id', 'order'], 'required', 'on' => self::SCENARIO_STORY_IMAGE_ORDER],
 	            [['imageFile'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, gif, bmp']
 	        ];
 	    }

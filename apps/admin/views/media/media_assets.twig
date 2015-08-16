@@ -4,10 +4,11 @@
 	<div class="col-lg-4">
 		{% if media_assets.images %}
 			<label>Image List:</label><br />
-			<div class="list-group">
+			<div class="image-list list-group">
 				{% for image in media_assets.images %}
 					<div data-storyimageid="{{ image.story_image_id }}" class="list-group-item">
-						{{ image.image_name }}
+						<a data-imagesrc="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}">{{ image.image_name }}</a>
+						<input type="number" data-storyimageid="{{ image.story_image_id }}" value="{{image.order != '' ? image.order : 100 }}" name="order" style="display: none;" />
 						<button class="close" type="button" data-storyimageid="{{ image.story_image_id }}">×</button>
 					</div>
 				{% endfor %}
@@ -35,52 +36,7 @@
 	<!-- End Image Block -->
 	<script>
 	<!--
-		$('button.close').click(function(){
-			removeImage($(this).data('storyimageid'));
-		});
-		var files;
-		// Add events
-		$('input[type="file"]').on('change', prepareUpload);
-
-		// Grab the files and set them to our variable
-		function prepareUpload(event){
-		  files = event.target.files;
-		}
-		// process the form
-	    $('#upload-form').submit(function(event) {
-	    	statusApp.showPleaseWait();
-	    	// stop the form from submitting the normal way and refreshing the page
-	        event.preventDefault();
-	    	// Create a formdata object and add the files
-		    data = new FormData();
-		    $.each(files, function(key, value)
-		    {
-		        data.append(key, value);
-		    });
-		    data.append('story_id', $('#storyimage-story_id').val());
-		    data.append('StoryImage[imageFile]', $('#storyimage-imagefile').val());
-
-	        // process the form
-	        $.ajax({
-		        url: '/media/upload',
-		        type: 'POST',
-		        data: data,
-		        dataType: 'json',
-		        processData: false, // Don't process the files
-		        contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-		        success: function(data, textStatus, jqXHR){  
-		        	statusApp.hidePleaseWait();
-
-			        // report validation errors
-			        reportFormErrors(data.errors);
-
-	                //refresh media
-	                if(data.save_success){
-	                	refreshMedia($('#storyimage-story_id').val());
-	                }
-		        }
-		    }); 
-	    });
+		loadAssetUtilities();
 	//-->
 	</script>
 {% else %}

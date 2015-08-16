@@ -18,6 +18,7 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
+        '/css/jquery-ui.min.css',
         '/css/bootstrap.min.css',
         '/css/sb-admin-2.css',
         '/css/font-awesome.min.css',
@@ -25,6 +26,7 @@ class AppAsset extends AssetBundle
         '/css/jquery-impromptu.css'
     ];
     public $js = [
+        '/js/jquery-ui.min.js',
         '/js/bootstrap.min.js',
         '/js/jquery-impromptu.min.js',
         '/js/common-functions.js'

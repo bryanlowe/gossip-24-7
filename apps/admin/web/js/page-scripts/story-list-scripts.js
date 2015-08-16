@@ -1,28 +1,16 @@
 $(function(){
-    $('[data-story][name="saveBtn"]').click(function(){
-        var story_num = $(this).data('story');
-        saveStory(story_num);
-    });
-
-    $('[data-story][name="deleteBtn"]').click(function(){
-        var story_num = $(this).data('story');
-        deleteStory(story_num);
-    });
-
-    $('[data-story][name="priority"]').change(function(){
-        var values = {};
-        values['story_priority_id'] = $(this).data('storypid');
-        values['story_id'] = $(this).data('story');
-        values['priority'] = $(this).val();
-        updatePriority(values);
-    });
-
-    $('[data-story][data-visible]').click(function(){
-        var story_num = $(this).data('story');
-        var state = $(this).data('visible');
-        toggleVisibility(story_num, state);
-    });
+    loadListUtilities();
 });
+
+function refreshStoryList(){
+    statusApp.showPleaseWait();
+    $.post('/storylist', function(data){
+        $('#story_list').html(data);
+    }).done(function(){
+        loadListUtilities();
+        statusApp.hidePleaseWait();
+    });
+}
 
 /**
  * Saves the blog story
@@ -37,6 +25,7 @@ function saveStory(story_num){
     values['story_date'] = $('[data-story="'+story_num+'"] [name="date"]').val();
     values['story_type'] = $('[data-story="'+story_num+'"] [name="story_type"]').val();
     $.post('/storylist/save', {story_values: values}, function(data){
+        statusApp.hidePleaseWait();
         data = $.parseJSON(data);
      
         // report validation errors
@@ -46,10 +35,10 @@ function saveStory(story_num){
             // if save is success, give user feedback
             $('a[href="#collapse-'+story_num+'"]').html(values['title']);
             $('#collapse-'+story_num).removeClass('in');
+            refreshStoryList();
             popUpMsg("The story has been updated!");
         }
-    });
-    statusApp.hidePleaseWait();
+    });   
 }
 
 /**
@@ -98,33 +87,67 @@ function toggleVisibility(story_num, state){
     values['story_id'] = story_num;
     values['visible'] = (state) ? 0 : 1;
     $.post('/storylist/visible', {story_values: values}, function(data){
+        statusApp.hidePleaseWait();
         data = $.parseJSON(data);
         // report validation errors
         reportFormErrors(data.errors);
 
         if(data.save_success){
             // if save is success, give user feedback
-            if(state){
-                $('[data-story="'+story_num+'"][data-visible]').html('<i class="fa fa-eye-slash fa-fw"></i>');
-            } else {
-                $('[data-story="'+story_num+'"][data-visible]').html('<i class="fa fa-eye fa-fw"></i>');
-            }
-            $('[data-story="'+story_num+'"][data-visible]').data('visible', (state ? 0 : 1));
+            refreshStoryList();
         }
     });
-    statusApp.hidePleaseWait();
 }
 
 /**
  * updates the blog story priority
  */
-function updatePriority(story){
+function updatePriority(story_values){
     statusApp.showPleaseWait();
-    $.post('/storylist/priority', {story_values: story}, function(data){
+    $.post('/storylist/priority', {story_values: story_values}, function(data){
         data = $.parseJSON(data);
-        
+     
+        statusApp.hidePleaseWait();
         // report validation errors
         reportFormErrors(data.errors);
     });
-    statusApp.hidePleaseWait();
+}
+
+function loadListUtilities(){
+    $('[data-story][name="saveBtn"]').click(function(){
+        var story_num = $(this).data('story');
+        saveStory(story_num);
+    });
+
+    $('[data-story][name="deleteBtn"]').click(function(){
+        var story_num = $(this).data('story');
+        deleteStory(story_num);
+    });
+
+    $('[data-story][name="priority"]').change(function(){
+        var values = {};
+        values['story_priority_id'] = $(this).data('storypid');
+        values['story_id'] = $(this).data('story');
+        values['priority'] = $(this).val();
+        updatePriority(values);
+    });
+
+    $('[data-story][data-visible]').click(function(){
+        var story_num = $(this).data('story');
+        var state = $(this).data('visible');
+        toggleVisibility(story_num, state);
+    });
+
+    $('#accordion').sortable({
+        stop: function(e, ui) {
+            var story_values = [];
+            $.each($.map($(this).find('.ui-sortable-handle'), function(el) {
+                var values = {};
+                values['story_priority_id'] = $(el).data('storypid');
+                values['priority'] = $(el).index();
+                story_values.push(values);
+            }));
+            updatePriority(story_values);
+        }
+    });
 }
