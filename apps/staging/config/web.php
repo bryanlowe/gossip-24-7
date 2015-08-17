@@ -1,4 +1,4 @@
-<?php
+-<?php
 
 $params = require(__DIR__ . '/params.php');
 
@@ -6,6 +6,7 @@ $config = [
     'id' => 'staging',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'layout' => 'main.twig',
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -38,6 +39,23 @@ $config = [
             ],
         ],
         'db' => require(__DIR__ . '/db.php'),
+        'view' => [
+            'class' => 'yii\web\View',
+            'renderers' => [
+                'twig' => [
+                    'class' => 'yii\twig\ViewRenderer',
+                    'cachePath' => '@runtime/Twig/cache',
+                    // Array of twig options:
+                    'options' => [
+                        'auto_reload' => true,
+                    ],
+                    'globals' => [
+                        'html' => '\yii\helpers\Html'
+                    ],
+                    'uses' => ['yii\bootstrap'],
+                ]
+            ]
+        ],
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,

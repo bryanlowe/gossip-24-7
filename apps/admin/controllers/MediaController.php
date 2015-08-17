@@ -99,7 +99,7 @@ class MediaController extends Controller
             $model->imageFile = UploadedFile::getInstanceByName('StoryImage[imageFile]');
             $model->story_id = Yii::$app->request->post('story_id');
             $model->image_name = $model->imageFile->baseName.'.'.$model->imageFile->extension;
-            $model->order = 100;
+            $model->order = 0;
             if($model->upload()){
                 echo json_encode(['save_success' => $model->save(), 'errors' => $model->getErrors()]);
             } else {

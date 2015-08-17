@@ -8,6 +8,9 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\Story;
+use app\models\StoryPriority;
+use app\models\StoryImage;
 
 class SiteController extends Controller
 {
@@ -49,7 +52,68 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('index');
+        $main_story = Story::find()
+            ->select('story.*')
+            ->where(['story_type' => 'SPOTLIGHT', 'visible' => 1])
+            ->joinWith('storyImage')
+            ->asArray()
+            ->limit(1)
+            ->one();
+
+        // create story list
+        $story_list = Story::find()
+            ->select('story.*')
+            ->innerJoinWith('storyPriority')
+            ->joinWith('storyImage')
+            ->where('story_type <> "SPOTLIGHT"')
+            ->andWhere(['visible' => 1])
+            ->orderBy('priority ASC')
+            ->asArray()
+            ->limit(29)
+            ->all();
+        $story_list = $this->formatStoryList($story_list);
+        if(count($story_list) > 0 || count($main_story) > 0){
+            return $this->render('index.twig', ['story_list' => $story_list, 'main_story' => $main_story]);
+        } else {
+            return $this->render('index.twig');
+        }
+    }
+
+    public function formatStoryList($story_list){
+        $featured_list = [];
+        $side_list = [];
+        $maxStories = count($story_list);
+        for($i = 0; $i < $maxStories; $i++){
+            if($story_list[$i]['story_type'] == 'FEATURED'){
+                $featured_list[] = $story_list[$i];
+            } else if($story_list[$i]['story_type'] == 'SIDE'){
+                $side_list[] = $story_list[$i];
+            }
+        }
+        $story_list = [];
+        $storyIndex = 0;
+        $maxFeatured = count($featured_list);
+        $maxSide = count($side_list);
+        for($i = 0; $i < $maxFeatured; $i++){
+            if($i % 2 == 0){
+                $storyIndex++;
+            }
+            if(empty($story_list[$storyIndex]['featured_list'])){
+                $story_list[$storyIndex]['featured_list'] = [];
+            }
+            $story_list[$storyIndex]['featured_list'][] = $featured_list[$i];
+        }
+        $storyIndex = 0;
+        for($i = 0; $i < $maxSide; $i++){
+            if($i % 3 == 0){
+                $storyIndex++;
+            }
+            if(empty($story_list[$storyIndex]['side_list'])){
+                $story_list[$storyIndex]['side_list'] = [];
+            }
+            $story_list[$storyIndex]['side_list'][] = $side_list[$i];
+        }
+        return $story_list;
     }
 
     public function actionPrototype($id = 1)

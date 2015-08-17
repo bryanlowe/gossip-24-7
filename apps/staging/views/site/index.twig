@@ -1,0 +1,154 @@
+{{ set(this, 'title', 'Gossip 24/7') }}
+<style type="text/css">
+body {
+	background: #fff;
+}
+h3 {
+	color: #064eb2;
+	font-weight: bold;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+h3 a.title:link, h3 a.title:hover, h3 a.title:visited {
+	color: #064eb2;
+}
+#site-header {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	border-top: 1px solid #e4e4e4;
+	border-bottom: 1px solid #e4e4e4;
+}
+.conference-rslide{
+	width: 100%;
+}
+.world-news-grid {
+	width: 30%;
+}
+.world-news-grid img {
+	width: 50%;
+	float: left;
+	padding-right: 5px;
+	padding-bottom: 5px;
+}
+.world-news-grid-midsize img {
+	float: left;
+	padding: 5px;
+}
+.videos {
+	padding: 0.8em 1em 0.5em;
+}
+.posts { 
+	padding: 0;
+}
+.conference-rslide{
+	width: 100%;
+}
+.conference-rslide img {
+	width: 796px;
+}
+.breaking-news-title {
+	width: 100%;
+}
+</style>
+<div class="news-paper">
+	<div id="site-header" class="header">
+		<div class="header-left">
+			<a href="/">
+				<h1><i>gossip</i>247.com</h1>
+			</a>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+	<div class="clearfix"><br /></div>
+	{% if main_story %}
+		<div class="main-content">		
+			<div class="col-md-12 total-news">
+				<h3><a href="{{ main_story.link }}" class="title" target="_blank">{{ main_story.title }}</a></h3>
+				<div class="clearfix"></div>
+				<div class="conference-slider">
+					{% for image in main_story.storyImage %}
+						{% if image.order == 0 %}
+							<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 1100px;" alt="">
+						{% endif %}
+					{% endfor %}
+					<p>{{ main_story.description }}</p>
+				</div>
+			</div>		
+			<div class="clearfix"></div>
+		</div>
+	{% endif %}
+
+	{% if story_list %}
+		{% for story in story_list %}
+			{% if story.featured_list|length > 0 %}
+				<div class="col-md-12">
+					<div class="col-md-9">
+						<div class="world-news-grids">
+							{% for featured_story in story.featured_list %}
+								<div class="world-news-grid-midsize">
+									<h3><a href="{{ featured_story.link }}" target="_blank" class="title">{{ featured_story.title }}</a></h3>
+									<div>
+										{% for image in featured_story.storyImage %}
+											{% if loop.index < 3 %}
+												<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 250px;" alt="">
+											{% endif %}
+										{% endfor %}
+										<p>{{ featured_story.description }}</p>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+							{% endfor %}
+						</div>
+					</div>
+					<div class="col-md-3" style="padding-left: 5px;">
+						<div class="world-news-grids">
+							{% for side_story in story.side_list %}
+								<div class="world-news-side">
+									<h3><a href="{{ side_story.link }}" target="_blank" class="title">{{ side_story.title }}</a></h3>
+									<div>
+										{% for image in side_story.storyImage %}
+											{% if image.order == 0 %}
+												<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 150px;" alt="">
+											{% endif %}
+										{% endfor %}
+										<p>{{ side_story.description }}</p>
+									</div>
+								</div>
+							{% endfor %}
+							<div class="clearfix"></div>
+						</div>
+					</div>
+				</div>
+			{% elseif story.side_list|length > 0 %}
+				<div class="col-md-12">
+					<div class="world-news">
+						<div class="world-news-grids">
+							{% for side_story in story.side_list %}
+								<div class="world-news-grid">
+									<h3><a href="{{ side_story.link }}" target="_blank" class="title">{{ side_story.title }}</a></h3>
+									<div>
+										{% for image in side_story.storyImage %}
+											{% if image.order == 0 %}
+												<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 150px;" alt="">
+											{% endif %}
+										{% endfor %}
+										<p>{{ side_story.description }}</p>
+									</div>
+								</div>
+								{% if loop.index % 3 == 0 %}
+									<div class="clearfix"></div>
+								{% endif %}
+							{% endfor %}
+						</div>
+					</div>
+					<div class="clearfix"></div>	
+				</div>
+			{% endif %}
+		{% endfor %}
+	{% endif %}
+	<div class="text-center" style="margin-top: 25px;">
+		<div class="copyright text-center">
+			<p>Gossip 24/7 &copy; 2015 All rights reserved</p>
+		</div>
+	</div>
+</div>

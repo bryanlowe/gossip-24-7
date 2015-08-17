@@ -1,0 +1,23 @@
+{{ use('app/assets/AppAsset')}}
+{{ register_app_asset() }}
+{{ this.beginPage() }}
+<!DOCTYPE html>
+<html lang="{{app.language}}">
+<head>
+    <meta charset="{{app.charset}}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {{ html.csrfMetaTags() | raw }}
+    <title>{{ html.encode(this.title) }}</title>
+    {{ this.head() }}
+</head>
+<body>
+{{ this.beginBody() }}
+
+    <div class="container">
+        {{ content | raw }}
+    </div>
+
+{{ this.endBody() }}
+</body>
+</html>
+{{ this.endPage() }}
