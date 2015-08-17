@@ -19,7 +19,7 @@
 			            </h4>
 			        </div>
 			        <div class="col-lg-3 story_date">
-						<label for="date">Date:</label> {{ entry.story_date != "" ? entry.story_date : "N/A" }}
+						<label for="date">Date:</label> {{ entry.story_date != "" ? entry.story_date|date('m/d/y h:iA') : "N/A" }}
 					</div>
 					<div class="col-lg-1">
 		            	<button data-story="{{entry.story_id}}" data-visible="{{entry.visible}}">

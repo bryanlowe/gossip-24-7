@@ -17,22 +17,59 @@ class StorylistController extends Controller
     }
 
     public function actionIndex() {
-        // create story list
-        $story_list = Story::find()
-            ->select('story.*')
-            ->innerJoinWith('storyPriority')
-            ->orderBy('priority ASC')
-            ->asArray()
-            ->limit(30)
-            ->all();
         // apply story list to the view
         if(Yii::$app->request->isAjax){
+            $filters = (Yii::$app->request->isPost) ? Yii::$app->request->post('filters') : [];
+            $orderBy = [];
+            if(!empty($filters) && array_key_exists('priority', $filters)){
+                $orderBy['priority'] = constant($filters['priority']); 
+            } 
+            if(!empty($filters) && array_key_exists('story_date', $filters)){
+                $orderBy['story_date'] = constant($filters['story_date']); 
+            }
+            // create story list
+            $story_list = Story::find()
+                ->select('story.*')
+                ->innerJoinWith('storyPriority')
+                ->orderBy($orderBy)
+                ->asArray()
+                ->limit(30)
+                ->all();
+            $maxStories = count($story_list);
+            if(!empty($filters) && array_key_exists('story_type', $filters)){
+                $temp = [];
+                for($i = 0; $i < $maxStories; $i++){
+                    if($story_list[$i]['story_type'] == $filters['story_type']){
+                        $temp[] = $story_list[$i];
+                    }
+                }
+                $story_list = $temp;
+            }
+
+            if(!empty($filters) && array_key_exists('visibility', $filters)){
+                $temp = [];
+                for($i = 0; $i < $maxStories; $i++){
+                    if($story_list[$i]['visible'] == $filters['visibility']){
+                        $temp[] = $story_list[$i];
+                    }
+                }
+                $story_list = $temp;
+            }
+                
             if(count($story_list) > 0){
                 return $this->renderPartial('story_list.twig', ['story_list' => $story_list]);
             } else {
                 return $this->renderPartial('story_list.twig');
             }
         } else {
+            // create story list
+            $story_list = Story::find()
+                ->select('story.*')
+                ->innerJoinWith('storyPriority')
+                ->orderBy('priority ASC')
+                ->asArray()
+                ->limit(30)
+                ->all();
             if(count($story_list) > 0){
                 return $this->render('index.twig', ['story_list' => $story_list]);
             } else {
@@ -94,7 +131,7 @@ class StorylistController extends Controller
         $model->setScenario(Story::SCENARIO_STORY_VISIBILITY);
         $model->visible = $story_values['visible'];
         if($model->story_date == ''){
-            $model->story_date = date('m/d/y h:iA');
+            $model->story_date = date('U');
             echo json_encode(['save_success' => $model->save(true, ['visible', 'story_date']), 'errors' => $model->getErrors()]);
         } else {
             echo json_encode(['save_success' => $model->save(true, ['visible']), 'errors' => $model->getErrors()]);

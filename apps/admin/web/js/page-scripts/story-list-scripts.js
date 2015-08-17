@@ -1,10 +1,39 @@
 $(function(){
+    // Filter Button Functionality
+    $('[data-sorttype="story_type"] > .btn, [data-sorttype="priority"] > .btn, [data-sorttype="story_date"] > .btn, [data-sorttype="visibility"] > .btn').click(function(){
+        if($(this).hasClass("active")){
+            $(this).removeClass("btn-info active");
+            $(this).addClass("btn-default");
+            $(this).blur();
+        } else {
+            $(this).addClass("btn-info").siblings().removeClass("btn-info");
+            $(this).removeClass("btn-default").siblings().addClass("btn-default");
+            $(this).addClass("active").siblings().removeClass("active");
+        }
+    });
+
+    $('[name="reset"]').click(function(){
+        $('button[data-sorttype]').removeClass("btn-info active");
+        $('button[data-sorttype]').addClass("btn-default");
+    });
+
+    $('[name="refresh"]').click(function(){
+        refreshStoryList();
+    });
+    // End Filter Button Functionality
+
     loadListUtilities();
 });
 
 function refreshStoryList(){
     statusApp.showPleaseWait();
-    $.post('/storylist', function(data){
+    var filters = {};
+    $('button[data-sorttype]').each(function(){
+        if($(this).hasClass("active")){
+            filters[$(this).data('sorttype')] = $(this).data('sortorder');
+        }
+    });
+    $.post('/storylist', {filters: filters}, function(data){
         $('#story_list').html(data);
     }).done(function(){
         loadListUtilities();
