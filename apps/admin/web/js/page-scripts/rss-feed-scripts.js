@@ -33,7 +33,7 @@ function saveFeed(story_num){
     values['title'] = $('[data-story="'+story_num+'"] [name="title"]').val();
     values['link'] = $('[data-story="'+story_num+'"] [name="link"]').val();
     values['description'] = $('[data-story="'+story_num+'"] [name="description"]').val();
-    values['story_type'] = $('[data-story="'+story_num+'"] [name="story_type"]').val();
+    values['story_size'] = $('[data-story="'+story_num+'"] [name="story_size"]').val();
     values['visible'] = 0;
     $.post('/rss/save', {story_values: values}, function(data){
         data = $.parseJSON(data);
@@ -43,7 +43,7 @@ function saveFeed(story_num){
         if(data.save_success){
             // if save is success, give user feedback
             $('[data-story="'+story_num+'"] [name="title"], [data-story="'+story_num+'"] [name="description"]').prop('readonly', true);
-            $('[data-story="'+story_num+'"] [name="story_type"]').prop('disabled', true);
+            $('[data-story="'+story_num+'"] [name="story_size"]').prop('disabled', true);
             $('[data-story="'+story_num+'"] [type="button"]').replaceWith('<button class="btn btn-success">SAVED!</button>');
             popUpMsg("RSS entry has been saved!");
         }

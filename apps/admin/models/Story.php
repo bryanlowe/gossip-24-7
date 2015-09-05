@@ -34,7 +34,7 @@
 	     */
 	    public function scenarios() {
 	        $scenarios = parent::scenarios();
-	        $scenarios[self::SCENARIO_STORY] = ['story_id', 'title', 'link', 'description', 'story_date', 'story_type', 'visible'];
+	        $scenarios[self::SCENARIO_STORY] = ['story_id', 'title', 'link', 'description', 'story_date', 'story_size', 'show_desc', 'visible'];
 	        $scenarios[self::SCENARIO_STORY_VISIBILITY] = ['story_id', 'visible', 'story_date'];
 	        return $scenarios;
 	    }
@@ -45,7 +45,7 @@
 	    public function rules() {
 	        return [
 	            // required
-	            [['title', 'link', 'description', 'story_type'], 'required', 'on' => self::SCENARIO_STORY],
+	            [['title', 'link', 'description', 'show_desc', 'story_size'], 'required', 'on' => self::SCENARIO_STORY],
 	            [['visible'], 'required', 'on' => self::SCENARIO_STORY_VISIBILITY],
 	            [['visible'], 'integer', 'on' => self::SCENARIO_STORY_VISIBILITY]
 	        ];

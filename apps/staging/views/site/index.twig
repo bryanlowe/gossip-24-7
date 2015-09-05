@@ -9,8 +9,11 @@ h3 {
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
-h3 a.title:link, h3 a.title:hover, h3 a.title:visited {
+h3 a.title:link {
 	color: #064eb2;
+}
+h3 a.title:hover {
+	color: #cf0000;
 }
 #site-header {
 	padding-top: 10px;
@@ -62,16 +65,18 @@ h3 a.title:link, h3 a.title:hover, h3 a.title:visited {
 	<div class="clearfix"><br /></div>
 	{% if main_story %}
 		<div class="main-content">		
-			<div class="col-md-12 total-news">
+			<div class="col-lg-12 total-news">
 				<h3><a href="{{ main_story.link }}" class="title" target="_blank">{{ main_story.title }}</a></h3>
 				<div class="clearfix"></div>
 				<div class="conference-slider">
 					{% for image in main_story.storyImage %}
 						{% if image.order == 0 %}
-							<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 1100px;" alt="">
+							<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 888px;" alt="">
 						{% endif %}
 					{% endfor %}
-					<p>{{ main_story.description }}</p>
+					{% if main_story.show_desc %}
+						<p>{{ main_story.description|raw }}</p>
+					{% endif %}
 				</div>
 			</div>		
 			<div class="clearfix"></div>
@@ -79,72 +84,161 @@ h3 a.title:link, h3 a.title:hover, h3 a.title:visited {
 	{% endif %}
 
 	{% if story_list %}
-		{% for story in story_list %}
-			{% if story.featured_list|length > 0 %}
-				<div class="col-md-12">
-					<div class="col-md-9">
-						<div class="world-news-grids">
-							{% for featured_story in story.featured_list %}
-								<div class="world-news-grid-midsize">
-									<h3><a href="{{ featured_story.link }}" target="_blank" class="title">{{ featured_story.title }}</a></h3>
-									<div>
-										{% for image in featured_story.storyImage %}
-											{% if loop.index < 3 %}
-												<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 250px;" alt="">
-											{% endif %}
-										{% endfor %}
-										<p>{{ featured_story.description }}</p>
-									</div>
-								</div>
-								<div class="clearfix"></div>
-							{% endfor %}
-						</div>
-					</div>
-					<div class="col-md-3" style="padding-left: 5px;">
-						<div class="world-news-grids">
-							{% for side_story in story.side_list %}
-								<div class="world-news-side">
-									<h3><a href="{{ side_story.link }}" target="_blank" class="title">{{ side_story.title }}</a></h3>
-									<div>
-										{% for image in side_story.storyImage %}
-											{% if image.order == 0 %}
-												<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 150px;" alt="">
-											{% endif %}
-										{% endfor %}
-										<p>{{ side_story.description }}</p>
-									</div>
-								</div>
-							{% endfor %}
-							<div class="clearfix"></div>
-						</div>
-					</div>
-				</div>
-			{% elseif story.side_list|length > 0 %}
-				<div class="col-md-12">
+		<div class="col-lg-12" style="padding: 0;">
+			{% if story_list.featured_list|length > 0 and story_list.side_list|length > 0 %}
+				<div class="col-md-9">
 					<div class="world-news">
-						<div class="world-news-grids">
-							{% for side_story in story.side_list %}
-								<div class="world-news-grid">
-									<h3><a href="{{ side_story.link }}" target="_blank" class="title">{{ side_story.title }}</a></h3>
-									<div>
-										{% for image in side_story.storyImage %}
-											{% if image.order == 0 %}
-												<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 150px;" alt="">
-											{% endif %}
-										{% endfor %}
-										<p>{{ side_story.description }}</p>
-									</div>
-								</div>
-								{% if loop.index % 3 == 0 %}
-									<div class="clearfix"></div>
+						{% for story in story_list.featured_list %}
+							<div class="world-news-grids">
+								<!-- starting horizontal list of featured stories ROW {{loop.index}} -->
+								{% if story.featured_list_h|length > 0 %}
+									{% for story_h in story.featured_list_h %}
+										<div class="world-news-grid-midsize">
+											<h3><a href="{{ story_h.link }}" target="_blank" class="title">{{ story_h.title }}</a></h3>
+											<div>
+												{% for image in story_h.storyImage %}
+													{% if loop.index < 3 %}
+														<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 250px;" alt="">
+													{% endif %}
+												{% endfor %}
+												{% if story_h.show_desc %}
+													<p>{{ story_h.description|raw }}</p>
+												{% endif %}
+											</div>
+										</div>
+										<div class="clearfix"></div>
+									{% endfor %}
 								{% endif %}
-							{% endfor %}
-						</div>
+
+								<!-- starting vertical list of featured stories ROW {{loop.index}} -->
+								{% if story.featured_list_v|length > 0 %}
+									{% for story_v in story.featured_list_v %}
+										<div class="world-news-grid">
+											<h3><a href="{{ story_v.link }}" target="_blank" class="title">{{ story_v.title }}</a></h3>
+											<div>
+												{% for image in story_v.storyImage %}
+													{% if image.order == 0 %}
+														<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 150px;" alt="">
+													{% endif %}
+												{% endfor %}
+												{% if story_v.show_desc %}
+													<p>{{ story_v.description|raw }}</p>
+												{% endif %}
+											</div>
+										</div>
+										{% if loop.index % 3 == 0 %}
+											<div class="clearfix"></div>
+										{% endif %}
+									{% endfor %}
+								{% endif %}
+							</div>
+						{% endfor %}
 					</div>
-					<div class="clearfix"></div>	
+					<div class="clearfix"></div>
+				</div>
+
+				<div class="col-md-3" style="padding-left: 5px;">
+					<div class="world-news-grids">
+						{% for side_story in story_list.side_list %}
+							<!-- starting side story ROW {{loop.index}} -->
+							<div class="world-news-side">
+								<h3><a href="{{ side_story.link }}" target="_blank" class="title">{{ side_story.title }}</a></h3>
+								<div>
+									{% for image in side_story.storyImage %}
+										{% if image.order == 0 %}
+											<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 150px;" alt="">
+										{% endif %}
+									{% endfor %}
+									{% if side_story.show_desc %}
+										<p>{{ side_story.description|raw }}</p>
+									{% endif %}
+								</div>
+							</div>
+						{% endfor %}
+						<div class="clearfix"></div>
+					</div>
 				</div>
 			{% endif %}
-		{% endfor %}
+
+			{% if story_list.featured_list|length > 0 and story_list.side_list|length == 0 %}
+				<div class="world-news">
+					{% for story in story_list.featured_list %}
+						<div class="world-news-grids">
+							<!-- starting horizontal list of featured stories ROW {{loop.index}} -->
+							{% if story.featured_list_h|length > 0 %}
+								{% for story_h in story.featured_list_h %}
+									<div class="world-news-grid-midsize">
+										<h3><a href="{{ story_h.link }}" target="_blank" class="title">{{ story_h.title }}</a></h3>
+										<div>
+											{% for image in story_h.storyImage %}
+												{% if loop.index < 3 %}
+													<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 250px;" alt="">
+												{% endif %}
+											{% endfor %}
+											{% if story_h.show_desc %}
+												<p>{{ story_h.description|raw }}</p>
+											{% endif %}
+										</div>
+									</div>
+									<div class="clearfix"></div>
+								{% endfor %}
+							{% endif %}
+
+							<!-- starting vertical list of featured stories ROW {{loop.index}} -->
+							{% if story.featured_list_v|length > 0 %}
+								{% for story_v in story.featured_list_v %}
+									<div class="world-news-grid">
+										<h3><a href="{{ story_v.link }}" target="_blank" class="title">{{ story_v.title }}</a></h3>
+										<div>
+											{% for image in story_v.storyImage %}
+												{% if image.order == 0 %}
+													<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 150px;" alt="">
+												{% endif %}
+											{% endfor %}
+											{% if story_v.show_desc %}
+												<p>{{ story_v.description|raw }}</p>
+											{% endif %}
+										</div>
+									</div>
+									{% if loop.index % 3 == 0 %}
+										<div class="clearfix"></div>
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+						</div>
+					{% endfor %}
+				</div>
+				<div class="clearfix"></div>
+			{% endif %}
+
+
+			{% if story_list.side_list|length > 0 and story_list.featured_list|length == 0 %}
+				<div class="world-news">
+					<div class="world-news-grids">
+						{% for side_story in story_list.side_list %}
+							<!-- starting side story ROW {{loop.index}} -->
+							<div class="world-news-grid">
+								<h3><a href="{{ side_story.link }}" target="_blank" class="title">{{ side_story.title }}</a></h3>
+								<div>
+									{% for image in side_story.storyImage %}
+										{% if image.order == 0 %}
+											<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 150px;" alt="">
+										{% endif %}
+									{% endfor %}
+									{% if side_story.show_desc %}
+										<p>{{ side_story.description|raw }}</p>
+									{% endif %}
+								</div>
+							</div>
+							{% if loop.index % 4 == 0 %}
+								<div class="clearfix"></div>
+							{% endif %}
+						{% endfor %}
+					</div>
+				</div>
+				<div class="clearfix"></div>
+			{% endif %}
+		</div>
 	{% endif %}
 	<div class="text-center" style="margin-top: 25px;">
 		<div class="copyright text-center">

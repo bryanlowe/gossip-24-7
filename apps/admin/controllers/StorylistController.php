@@ -36,10 +36,10 @@ class StorylistController extends Controller
                 ->limit(30)
                 ->all();
             $maxStories = count($story_list);
-            if(!empty($filters) && array_key_exists('story_type', $filters)){
+            if(!empty($filters) && array_key_exists('story_size', $filters)){
                 $temp = [];
                 for($i = 0; $i < $maxStories; $i++){
-                    if($story_list[$i]['story_type'] == $filters['story_type']){
+                    if($story_list[$i]['story_size'] == $filters['story_size']){
                         $temp[] = $story_list[$i];
                     }
                 }
@@ -62,11 +62,12 @@ class StorylistController extends Controller
                 return $this->renderPartial('story_list.twig');
             }
         } else {
+            $orderBy = ['priority' => SORT_ASC, 'story_id' => SORT_DESC];
             // create story list
             $story_list = Story::find()
                 ->select('story.*')
                 ->innerJoinWith('storyPriority')
-                ->orderBy('priority ASC')
+                ->orderBy($orderBy)
                 ->asArray()
                 ->limit(30)
                 ->all();
@@ -83,19 +84,19 @@ class StorylistController extends Controller
      */
     public function actionSave() {
         $story_values = Yii::$app->request->post('story_values');
-        if($story_values['story_type'] == 'SPOTLIGHT'){
-            $story_list = Story::findAll(['story_type' => $story_values['story_type']]);
+        if($story_values['story_size'] == 1){
+            $story_list = Story::findAll(['story_size' => $story_values['story_size']]);
             foreach($story_list as $story){
                 if($story->story_id != $story_values['story_id']){
-                   $story->story_type = 'FEATURED'; 
-                   $story->save(true, ['story_type']);
+                   $story->story_size = 2; 
+                   $story->save(true, ['story_size']);
                 }
             }
         }
         $model = Story::findOne($story_values['story_id']);
         $model->setScenario(Story::SCENARIO_STORY);
         $model->attributes = $story_values;
-        echo json_encode(['save_success' => $model->save(true, ['title','story_type','link','description']), 'errors' => $model->getErrors()]);
+        echo json_encode(['save_success' => $model->save(true, ['title','story_size','link','description', 'show_desc']), 'errors' => $model->getErrors()]);
     }
 
     /**

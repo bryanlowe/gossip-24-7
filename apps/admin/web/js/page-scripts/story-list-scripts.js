@@ -1,6 +1,6 @@
 $(function(){
     // Filter Button Functionality
-    $('[data-sorttype="story_type"] > .btn, [data-sorttype="priority"] > .btn, [data-sorttype="story_date"] > .btn, [data-sorttype="visibility"] > .btn').click(function(){
+    $('[data-sorttype="story_size"] > .btn, [data-sorttype="priority"] > .btn, [data-sorttype="story_date"] > .btn, [data-sorttype="visibility"] > .btn').click(function(){
         if($(this).hasClass("active")){
             $(this).removeClass("btn-info active");
             $(this).addClass("btn-default");
@@ -52,7 +52,8 @@ function saveStory(story_num){
     values['link'] = $('[data-story="'+story_num+'"] [name="link"]').val();
     values['description'] = $('[data-story="'+story_num+'"] [name="description"]').val();
     values['story_date'] = $('[data-story="'+story_num+'"] [name="date"]').val();
-    values['story_type'] = $('[data-story="'+story_num+'"] [name="story_type"]').val();
+    values['story_size'] = $('[data-story="'+story_num+'"] [name="story_size"]').val();
+    values['show_desc'] = $('[data-story="'+story_num+'"] [name^="show_desc"]:checked').val();
     $.post('/storylist/save', {story_values: values}, function(data){
         statusApp.hidePleaseWait();
         data = $.parseJSON(data);

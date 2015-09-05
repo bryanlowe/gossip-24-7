@@ -80,12 +80,12 @@ class RssController extends Controller
      */
     public function actionSave() {
         $story_values = Yii::$app->request->post('story_values');
-        if($story_values['story_type'] == 'SPOTLIGHT'){
-            $story_list = Story::findAll(['story_type' => $story_values['story_type']]);
+        if($story_values['story_size'] == 1){
+            $story_list = Story::findAll(['story_size' => $story_values['story_size']]);
             foreach($story_list as $story){
                 if($story->story_id != $story_values['story_id']){
-                   $story->story_type = 'FEATURED'; 
-                   $story->save(true, ['story_type']);
+                   $story->story_size = 2; 
+                   $story->save(true, ['story_size']);
                 }
             }
         }
@@ -98,8 +98,7 @@ class RssController extends Controller
             $storyPriority = new StoryPriority;
             $storyPriority->setScenario(StoryPriority::SCENARIO_STORY_PRIORITY);
             $storyPriority->story_id = $model->getPrimaryKey();
-            $storyPriority->priority = 30;
-            $result = $storyPriority->save(true, ['story_id', 'priority']);
+            $result = $storyPriority->save(true, ['story_id']);
             $errors = $storyPriority->getErrors();
         }
         echo json_encode(['save_success' => $result, 'errors' => $errors]);

@@ -54,7 +54,7 @@ class SiteController extends Controller
     {
         $main_story = Story::find()
             ->select('story.*')
-            ->where(['story_type' => 'SPOTLIGHT', 'visible' => 1])
+            ->where(['story_size' => 1, 'visible' => 1])
             ->joinWith('storyImage')
             ->asArray()
             ->limit(1)
@@ -65,7 +65,7 @@ class SiteController extends Controller
             ->select('story.*')
             ->innerJoinWith('storyPriority')
             ->joinWith('storyImage')
-            ->where('story_type <> "SPOTLIGHT"')
+            ->where('story_size <> 1')
             ->andWhere(['visible' => 1])
             ->orderBy('priority ASC')
             ->asArray()
@@ -80,39 +80,44 @@ class SiteController extends Controller
     }
 
     public function formatStoryList($story_list){
-        $featured_list = [];
+        $featured_list_h = [];
+        $featured_list_v = [];
         $side_list = [];
         $maxStories = count($story_list);
         for($i = 0; $i < $maxStories; $i++){
-            if($story_list[$i]['story_type'] == 'FEATURED'){
-                $featured_list[] = $story_list[$i];
-            } else if($story_list[$i]['story_type'] == 'SIDE'){
+            if($story_list[$i]['story_size'] == 2){
+                $featured_list_h[] = $story_list[$i];
+            } else if($story_list[$i]['story_size'] == 3){
+                $featured_list_v[] = $story_list[$i];
+            } else if($story_list[$i]['story_size'] == 4){
                 $side_list[] = $story_list[$i];
             }
         }
         $story_list = [];
+        $story_list['featured_list'] = [];
         $storyIndex = 0;
-        $maxFeatured = count($featured_list);
-        $maxSide = count($side_list);
-        for($i = 0; $i < $maxFeatured; $i++){
+        $maxFeatured_h = count($featured_list_h);
+        $maxFeatured_v = count($featured_list_v);
+        for($i = 0; $i < $maxFeatured_h; $i++){
             if($i % 2 == 0){
                 $storyIndex++;
             }
-            if(empty($story_list[$storyIndex]['featured_list'])){
-                $story_list[$storyIndex]['featured_list'] = [];
+            if(empty($story_list['featured_list'][$storyIndex]['featured_list_h'])){
+                $story_list['featured_list'][$storyIndex]['featured_list_h'] = [];
             }
-            $story_list[$storyIndex]['featured_list'][] = $featured_list[$i];
+            $story_list['featured_list'][$storyIndex]['featured_list_h'][] = $featured_list_h[$i];
         }
         $storyIndex = 0;
-        for($i = 0; $i < $maxSide; $i++){
+        for($i = 0; $i < $maxFeatured_v; $i++){
             if($i % 3 == 0){
                 $storyIndex++;
             }
-            if(empty($story_list[$storyIndex]['side_list'])){
-                $story_list[$storyIndex]['side_list'] = [];
+            if(empty($story_list['featured_list'][$storyIndex]['featured_list_v'])){
+                $story_list['featured_list'][$storyIndex]['featured_list_v'] = [];
             }
-            $story_list[$storyIndex]['side_list'][] = $side_list[$i];
+            $story_list['featured_list'][$storyIndex]['featured_list_v'][] = $featured_list_v[$i];
         }
+        $story_list['side_list'] = $side_list;
         return $story_list;
     }
 
