@@ -1,4 +1,4 @@
--<?php
+<?php
 
 $params = require(__DIR__ . '/params.php');
 
@@ -61,8 +61,8 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 'home' => 'site/index',
-                'prototype' => 'site/prototype',
-                'prototype/<id:\d+>' => 'site/prototype',
+                'login' => 'site/login',
+                'logout' => 'site/logout',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
                 '<controller:\w+>/<action:\w+>' => '<controller>/<action>'

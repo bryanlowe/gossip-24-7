@@ -11,17 +11,16 @@
     {{ this.head() }}
 </head>
 <style>
-	body {
-		background: #fff;
-	}
+    #page-wrapper{
+        margin: 0;
+        height: 700px;
+    }
 </style>
 <body>
 {{ this.beginBody() }}
-
-    <div class="container" style="max-width: 960px;">
+    <div id="page-wrapper">
         {{ content | raw }}
     </div>
-
 {{ this.endBody() }}
 </body>
 </html>

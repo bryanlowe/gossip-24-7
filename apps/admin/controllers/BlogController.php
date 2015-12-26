@@ -2,11 +2,28 @@
 namespace app\controllers;
 use Yii;
 use yii\web\Controller;
+use yii\filters\AccessControl;
 use app\models\Story;
 use app\models\StoryPriority;
 
 class BlogController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'except' => ['site/login'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actions() {
         return [
             'error' => [
@@ -36,6 +53,7 @@ class BlogController extends Controller
         $model = new Story;
         $model->setScenario(Story::SCENARIO_STORY);
         $model->attributes = $story_values;
+        $model->show_desc = 1;
         $result = $model->save();
         $errors = $model->getErrors();
         if($result){

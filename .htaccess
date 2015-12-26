@@ -1,6 +1,21 @@
 RewriteEngine on
+# If a staging subdomain, redirect to subdomain index.php
+#RewriteCond %{HTTP_HOST} ^staging.gossip247.com$
+#RewriteCond %{REQUEST_URI} !^/apps/staging/web/
+#RewriteRule ^(.*)$ /apps/staging/web/$1 [L]
+#RewriteCond %{HTTP_HOST} ^staging.gossip247.com$
+#RewriteRule ^(/)?$ apps/stagin/web/ [L]
+
+# If a admin subdomain, redirect to subdomain index.php
+#RewriteCond %{HTTP_HOST} ^admin.gossip247.com$
+#RewriteCond %{REQUEST_URI} !^/apps/admin/web/
+#RewriteRule ^(.*)$ /apps/admin/web/$1 [L]
+#RewriteCond %{HTTP_HOST} ^admin.gossip247.com$
+#RewriteRule ^(/)?$ apps/admin/web/ [L]
+
 # If a directory or a file exists, use it directly
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+
 # Otherwise forward it to index.php
-RewriteRule . index.php
+RewriteRule . index.php [L]

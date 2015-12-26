@@ -2,12 +2,29 @@
 namespace app\controllers;
 use Yii;
 use yii\web\Controller;
+use yii\filters\AccessControl;
 use app\models\Story;
 use app\models\StoryPriority;
 use app\models\StoryImage;
 
 class StorylistController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'except' => ['site/login'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actions() {
         return [
             'error' => [

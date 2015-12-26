@@ -2,12 +2,29 @@
 namespace app\controllers;
 use Yii;
 use yii\web\Controller;
+use yii\filters\AccessControl;
 use yii\web\UploadedFile;
 use app\models\Story;
 use app\models\StoryImage;
 
 class MediaController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'except' => ['site/login'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actions() {
         return [
             'error' => [

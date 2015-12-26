@@ -1,4 +1,5 @@
 {{ set(this, 'title', 'Gossip 24/7 Admin - Home') }}
+{{ this.registerJsFile('/js/jquery.min.js') }}
 <div class="row">
 	<p style="font-size: 30px;" class="text-center"><strong>Pick from the bottons below or use the navigation on the left to get started.</strong></p>
 	<!-- RSS Block -->
@@ -116,4 +117,34 @@
 	    </div>
 	</div>
     <!-- End Media Block -->
+</div>
+<div class="row">
+	<!-- User Block -->
+	<div class="col-lg-3">
+        <div class="panel panel-info">
+	      	<div class="panel-heading">
+	        	<div class="row">
+	            	<div class="col-xs-6">
+	              	<i class="fa fa-users fa-5x"></i>
+	            	</div>
+	            	<div class="col-xs-6 text-right">
+	              	  	<p class="task-title">Users</p>
+	            	</div>
+	        	</div>
+	      	</div>
+	      	<a href="/users">
+	        	<div class="panel-footer announcement-bottom">
+	            	<div class="row">
+		              	<div class="col-xs-6">
+		               		Manage Users
+		              	</div>
+		              	<div class="col-xs-6 text-right">
+		                	<i class="fa fa-arrow-circle-right"></i>
+		              	</div>
+	            	</div>
+	        	</div>
+	      	</a>
+	    </div>
+	</div>
+    <!-- End User Block -->
 </div>

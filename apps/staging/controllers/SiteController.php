@@ -5,53 +5,59 @@ namespace app\controllers;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\filters\VerbFilter;
 use app\models\LoginForm;
-use app\models\ContactForm;
 use app\models\Story;
 use app\models\StoryPriority;
 use app\models\StoryImage;
 
+/**
+ * Controls the homepage of the site
+ */
 class SiteController extends Controller
 {
+    /**
+     * Creates behaviors the site should follow
+     *
+     * Access Rule 1: Only authenticated users can view this page, otherwise they will be forced to login
+     */
     public function behaviors()
     {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout'],
+                'except' => ['login'],
                 'rules' => [
                     [
-                        'actions' => ['logout'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
+                ]
             ],
         ];
     }
 
+    /**
+     * Creates the actions that the site should used in certain cases
+     *
+     * Error: If there is an error, delegate it to the ErrorAction page class
+     */
     public function actions()
     {
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
         ];
     }
 
+    /** 
+     * Creates the homepage
+     *
+     * Gathers the list of stories and sorts them by size, after this it displays the stories to the page
+     */
     public function actionIndex()
     {
+        // Find main story, if there is one
         $main_story = Story::find()
             ->select('story.*')
             ->where(['story_size' => 1, 'visible' => 1])
@@ -79,7 +85,11 @@ class SiteController extends Controller
         }
     }
 
+    /**
+     * Formats the story list after sorting it, prepares it for display
+     */
     public function formatStoryList($story_list){
+        // BEGIN: sorting out the featured stories from the side stories
         $featured_list_h = [];
         $featured_list_v = [];
         $side_list = [];
@@ -93,6 +103,9 @@ class SiteController extends Controller
                 $side_list[] = $story_list[$i];
             }
         }
+        // END:  sorting out the featured stories from the side stories
+
+        // BEGIN: sorting out the featured stories from horizontal stories and vertical stories
         $story_list = [];
         $story_list['featured_list'] = [];
         $storyIndex = 0;
@@ -117,54 +130,45 @@ class SiteController extends Controller
             }
             $story_list['featured_list'][$storyIndex]['featured_list_v'][] = $featured_list_v[$i];
         }
+        // END: sorting out the featured stories from horizontal stories and vertical stories
+
+        // put side stories into the story list
         $story_list['side_list'] = $side_list;
         return $story_list;
     }
 
-    public function actionPrototype($id = 1)
-    {
-        return $this->render('prototype_'.$id);
-    }
-
+    /**
+     * Create login for the site.
+     */
     public function actionLogin()
     {
+        // if user is returning to the site and is logged in, go to the homepage
         if (!\Yii::$app->user->isGuest) {
             return $this->goHome();
         }
-
+        
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            // if logged in successfully, go back to the url previously accessed
             return $this->goBack();
         } else {
-            return $this->render('login', [
+            // if login is a failure, or if the user is first landing on the site (NO POST), redirect to login page
+            return $this->render('/login/index.twig', [
                 'model' => $model,
             ]);
         }
+        
     }
 
+    /**
+     * Create logout for the site
+     */
     public function actionLogout()
     {
+        // logout
         Yii::$app->user->logout();
 
+        // go to home page
         return $this->goHome();
-    }
-
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        } else {
-            return $this->render('contact', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    public function actionAbout()
-    {
-        return $this->render('about');
     }
 }
