@@ -39,6 +39,17 @@ class BlogController extends Controller
             ->where(['story.story_id' => $story_id])
             ->asArray()
             ->one();
-        return $this->render('index.twig', ['story' => $story]);
+
+        // create story list
+        $story_list = Story::find()
+            ->select('story.*')
+            ->innerJoinWith('storyPriority')
+            ->joinWith('storyImage')
+            ->where('story_size <> '.$story_id)
+            ->andWhere(['visible' => 1])
+            ->orderBy('priority ASC')
+            ->asArray()
+            ->all();
+        return $this->render('index.twig', ['story' => $story, 'side_stories' => $story_list]);
     }
 }
