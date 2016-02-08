@@ -89,7 +89,7 @@ h3 a.title:hover, h4 a.title:hover {
 	{% if story_list %}
 		<div class="col-lg-12" style="padding: 0;">
 			{% if story_list.featured_list|length > 0 and story_list.side_list|length > 0 %}
-				<div class="col-md-9" style="padding-left: 0;">
+				<div class="col-md-9" style="padding-left: 0; padding-right: 0;">
 					<div class="world-news">
 						{% for story in story_list.featured_list %}
 							<div class="world-news-grids">
@@ -97,13 +97,17 @@ h3 a.title:hover, h4 a.title:hover {
 								{% if story.featured_list_h|length > 0 %}
 									{% for story_h in story.featured_list_h %}
 										<div class="world-news-grid-midsize">
-											<h3><a href="{{ story_h.link }}" target="_blank" class="title">{{ story_h.title|raw }}</a></h3>
+											{% if story_h.story_size != 5 %}
+												<h3><a href="{{ story_h.link }}" target="_blank" class="title">{{ story_h.title|raw }}</a></h3>
+											{% endif %}
 											<div>
+											{% if story_h.story_size != 5 %}
 												{% for image in story_h.storyImage %}
 													{% if loop.index < 3 %}
 														<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 250px;" alt="">
 													{% endif %}
 												{% endfor %}
+											{% endif %}
 												{% if story_h.show_desc %}
 													<p>{{ story_h.description|raw }}</p>
 												{% endif %}
@@ -245,7 +249,7 @@ h3 a.title:hover, h4 a.title:hover {
 	{% endif %}
 	<div class="text-center" style="margin-top: 25px;">
 		<div class="copyright text-center">
-			<p>Gossip 24/7 &copy; 2015 All rights reserved</p>
+			<p>Gossip 24/7 &copy; 2016 All rights reserved</p>
 		</div>
 	</div>
 </div>

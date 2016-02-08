@@ -75,7 +75,6 @@ class SiteController extends Controller
             ->andWhere(['visible' => 1])
             ->orderBy('priority ASC')
             ->asArray()
-            ->limit(29)
             ->all();
         $story_list = $this->formatStoryList($story_list);
         if(count($story_list) > 0 || count($main_story) > 0){
@@ -95,7 +94,7 @@ class SiteController extends Controller
         $side_list = [];
         $maxStories = count($story_list);
         for($i = 0; $i < $maxStories; $i++){
-            if($story_list[$i]['story_size'] == 2){
+            if($story_list[$i]['story_size'] == 2 || $story_list[$i]['story_size'] == 5){
                 $featured_list_h[] = $story_list[$i];
             } else if($story_list[$i]['story_size'] == 3){
                 $featured_list_v[] = $story_list[$i];

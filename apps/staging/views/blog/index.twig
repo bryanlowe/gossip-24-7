@@ -1,0 +1,89 @@
+{{ set(this, 'title', 'Gossip 24/7 Blog') }}
+<style type="text/css">
+body {
+	background: #fff;
+}
+h3, h4 {
+	color: #203eda;
+	font-weight: bold;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+h3 a.title:link, h3 a.title:visited, h4 a.title:link, h4 a.title:visited {
+	color: #203eda;
+}
+h3 a.title:hover, h4 a.title:hover {
+	color: #dd0000;
+}
+#site-header {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	border-top: 1px solid #e4e4e4;
+	border-bottom: 1px solid #e4e4e4;
+}
+.conference-rslide{
+	width: 100%;
+}
+.world-news-grid {
+	width: 30%;
+}
+.world-news-grid a {
+	text-transform: none;
+}
+.world-news-grid img {
+	width: 50%;
+	float: left;
+	padding-right: 5px;
+	padding-bottom: 5px;
+}
+.world-news-grid-midsize img {
+	float: left;
+	padding: 5px;
+}
+.videos {
+	padding: 0.8em 1em 0.5em;
+}
+.posts { 
+	padding: 0;
+}
+.conference-rslide{
+	width: 100%;
+}
+.conference-rslide img {
+	width: 796px;
+}
+.breaking-news-title {
+	width: 100%;
+}
+</style>
+<div class="news-paper">
+	<div id="site-header" class="header">
+		<div class="header-left">
+			<a href="/">
+				<h1><i>gossip</i>247.com</h1>
+			</a>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+	<div class="clearfix"><br /></div>
+	<div class="main-content">		
+		<div class="col-lg-12 total-news">
+			<h3>{{ story.title|raw }}</h3>
+			<div class="clearfix"></div>
+			<div class="conference-slider">
+				{% for image in story.storyImage %}
+					{% if loop.index < 3 %}
+						<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" alt="{{ image.image_name }}">
+					{% endif %}
+				{% endfor %}
+				<p>{{ story.description|raw }}</p>
+			</div>
+		</div>		
+		<div class="clearfix"></div>
+	</div>
+	<div class="text-center" style="margin-top: 25px;">
+		<div class="copyright text-center">
+			<p>Gossip 24/7 &copy; 2016 All rights reserved</p>
+		</div>
+	</div>
+</div>

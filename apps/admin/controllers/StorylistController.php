@@ -50,7 +50,6 @@ class StorylistController extends Controller
                 ->innerJoinWith('storyPriority')
                 ->orderBy($orderBy)
                 ->asArray()
-                ->limit(30)
                 ->all();
             $maxStories = count($story_list);
             if(!empty($filters) && array_key_exists('story_size', $filters)){
@@ -73,8 +72,14 @@ class StorylistController extends Controller
                 $story_list = $temp;
             }
                 
-            if(count($story_list) > 0){
-                return $this->renderPartial('story_list.twig', ['story_list' => $story_list]);
+            if(($maxStories = count($story_list)) > 0){
+                $visible_story_count = 0;
+                for($i = 0; $i < $maxStories; $i++){
+                    if($story_list[$i]['visible']){
+                       $visible_story_count++; 
+                    }
+                }
+                return $this->renderPartial('story_list.twig', ['story_list' => $story_list, 'story_count' => $maxStories, 'visible_story_count' => $visible_story_count]);
             } else {
                 return $this->renderPartial('story_list.twig');
             }
@@ -86,10 +91,15 @@ class StorylistController extends Controller
                 ->innerJoinWith('storyPriority')
                 ->orderBy($orderBy)
                 ->asArray()
-                ->limit(30)
                 ->all();
-            if(count($story_list) > 0){
-                return $this->render('index.twig', ['story_list' => $story_list]);
+            if(($maxStories = count($story_list)) > 0){
+                $visible_story_count = 0;
+                for($i = 0; $i < $maxStories; $i++){
+                    if($story_list[$i]['visible']){
+                       $visible_story_count++; 
+                    }
+                }
+                return $this->render('index.twig', ['story_list' => $story_list, 'story_count' => $maxStories, 'visible_story_count' => $visible_story_count]);
             } else {
                 return $this->render('index.twig');
             }
@@ -113,7 +123,7 @@ class StorylistController extends Controller
         $model = Story::findOne($story_values['story_id']);
         $model->setScenario(Story::SCENARIO_STORY);
         $model->attributes = $story_values;
-        echo json_encode(['save_success' => $model->save(true, ['title','story_size','link','description', 'show_desc']), 'errors' => $model->getErrors()]);
+        echo json_encode(['save_success' => $model->save(true, ['title','story_size','link','description','show_desc']), 'errors' => $model->getErrors()]);
     }
 
     /**

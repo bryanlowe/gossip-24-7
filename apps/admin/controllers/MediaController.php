@@ -39,7 +39,6 @@ class MediaController extends Controller
             ->select('story_id, title')
             ->orderBy('story_id DESC')
             ->asArray()
-            ->limit(30)
             ->all();
         // apply story list to the view
         if(count($story_list)){

@@ -1,4 +1,7 @@
 {% if story_list %}
+	<div class="pull-right btn-group" style="margin-top: -62px; font-weight: bold; color: #fff;">
+		<span class="btn" style="font-weight: bold; color: #fff;"><i class="fa fa-newspaper-o fa-fw"></i> Story Count: <span id="story_count">{{story_count}}</span></span><span class="btn" style="font-weight: bold; color: #fff;"><i class="fa fa-eye fa-fw"></i> Visisble Stories: <span id="visible_story_count">{{visible_story_count}}</span></span>
+	</div>
 	<div class="panel-group" id="accordion" aria-multiselectable="true" role="tablist">
 		{% for entry in story_list %}
 			<div data-storypid="{{entry.storyPriority.story_priority_id}}" data-story="{{entry.story_id}}" class="panel 
@@ -43,6 +46,7 @@
 									<option value="2" {{ entry.story_size == 2 ? "selected" : "" }}>Featured Story - Horizontal</option>
 									<option value="3" {{ entry.story_size == 3 ? "selected" : "" }}>Featured Story - Vertical</option>
 									<option value="4" {{ entry.story_size == 4 ? "selected" : "" }}>Side Story</option>
+									<option value="5" {{ entry.story_size == 5 ? "selected" : "" }}>Advertisement</option>
 								</select>
 							</div>
 							<div class="col-lg-3">
