@@ -33,49 +33,20 @@
 					</div>
 		        </div>
 		        <div aria-labelledby="heading-{{entry.story_id}}" role="tabpanel" class="panel-collapse collapse" id="collapse-{{entry.story_id}}">
-		          	<div class="panel-body">
-		            	<div class="row">
-							<div class="col-lg-3">
-								<label for="title">Title</label><br />
-								<input class="form-control" name="title" value="{{entry.title}}" placeholder="Enter your title here" />
-							</div>
-							<div class="col-lg-3">
-								<label for="story_size">Story Size</label><br />
-								<select class="form-control" name="story_size">
-									<option value="1" {{ entry.story_size == 1 ? "selected" : "" }}>Main Story</option>
-									<option value="2" {{ entry.story_size == 2 ? "selected" : "" }}>Featured Story - Horizontal</option>
-									<option value="3" {{ entry.story_size == 3 ? "selected" : "" }}>Featured Story - Vertical</option>
-									<option value="4" {{ entry.story_size == 4 ? "selected" : "" }}>Side Story</option>
-									<option value="5" {{ entry.story_size == 5 ? "selected" : "" }}>Advertisement</option>
-								</select>
-							</div>
-							<div class="col-lg-3">
-								<label for="link">Link</label><br />
-								<input class="form-control" name="link" value="{{ entry.link }}" placeholder="Enter your link here" />
-							</div>
-							<div class="col-lg-3">
-								<label for="show_desc">Show description?</label><br />
-								<label class="radio-inline">
-                                    <input type="radio" {{ entry.show_desc ? 'checked' : "" }} value="1" name="show_desc_{{ entry.story_id }}"> Yes
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" {{ entry.show_desc ? "" : 'checked' }} value="0" name="show_desc_{{ entry.story_id }}"> No
-                                </label>
-							</div>
+		          	<div id="story-tabs-{{entry.story_id}}" class="panel-body">
+		          		<ul>
+						    <li><a href="#edit-story-fragment-{{entry.story_id}}"><span>Edit Story</span></a></li>
+						    <li><a href="#edit-images-fragment-{{entry.story_id}}"><span>Upload/Edit Images</span></a></li>
+						    <li><a href="#edit-tags-fragment-{{entry.story_id}}"><span>Add/Edit Tags</span></a></li>
+						</ul>
+		            	<div id="edit-story-fragment-{{entry.story_id}}" class="row">
+		            		{% include "story_fragment.twig" %}
 						</div>
-						<div class="clear"><br /></div>
-						<div class="row">
-							<div class="col-lg-12">
-								<label for="description">Description</label><br />
-								<textarea class="form-control" name="description" placeholder="Enter your story here">{{entry.description}}</textarea>
-							</div>
-							<div class="clear"><br /></div>
-							<div class="pull-right" style="margin-right: 20px;">
-								<input type="button" data-story="{{entry.story_id}}" name="deleteBtn" class="btn btn-danger" value="DELETE STORY" />
-							</div>
-							<div class="pull-right" style="margin-right: 20px;">
-								<input type="button" data-story="{{entry.story_id}}" name="saveBtn" class="btn btn-info" value="SAVE STORY" />
-							</div>
+						<div id="edit-images-fragment-{{entry.story_id}}" class="row">
+		            		{% include "image_fragment.twig" %}
+						</div>
+						<div id="edit-tags-fragment-{{entry.story_id}}" class="row">
+		            		{% include "tag_fragment.twig" %}
 						</div>
 		          	</div>
 		        </div>

@@ -49,20 +49,25 @@ class MediaController extends Controller
     }
 
     /**
-     * load story assets from the database and echos the result
+     * load story assets from the database and echos the result or returns the result as an array
      */
-    public function actionAssets() {
+    public function actionAssets($story_id = "") {
         $model = new StoryImage;
         $model->setScenario(StoryImage::SCENARIO_STORY_IMAGE);
-        $story_values = Yii::$app->request->post('story_values');
-        // create asset list
-        $media_assets = [];
-        $media_assets['story_id'] = $story_values['story_id'];
-        $image_list = StoryImage::find()->where(['story_id' => $story_values['story_id']])->orderBy('order ASC')->asArray()->all();
-        $media_assets['images'] = $image_list;
+        if(Yii::$app->request->isAjax){
+            $story_values = Yii::$app->request->post('story_values');
+            // create asset list
+            $media_assets = [];
+            $media_assets['story_id'] = $story_values['story_id'];
+            $image_list = StoryImage::find()->where(['story_id' => $story_values['story_id']])->orderBy('order ASC')->asArray()->all();
+            $media_assets['images'] = $image_list;
 
-        // apply media assets to the view
-        echo $this->renderPartial('media_assets.twig', ['media_assets' => $media_assets, 'model' => $model]);
+            // apply media assets to the view
+            echo $this->renderPartial('media_assets.twig', ['media_assets' => $media_assets, 'model' => $model]);
+        } else if(is_numeric($story_id)){
+            $image_list = StoryImage::find()->where(['story_id' => $story_id])->orderBy('order ASC')->asArray()->all();
+            return $image_list;
+        }
     }
 
     /**

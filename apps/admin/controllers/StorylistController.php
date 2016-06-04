@@ -33,6 +33,9 @@ class StorylistController extends Controller
         ];
     }
 
+    /**
+     * Renders the Story List page
+     */
     public function actionIndex() {
         // apply story list to the view
         if(Yii::$app->request->isAjax){
@@ -52,6 +55,8 @@ class StorylistController extends Controller
                 ->asArray()
                 ->all();
             $maxStories = count($story_list);
+
+            // filter the stories by size if the story size filter is set
             if(!empty($filters) && array_key_exists('story_size', $filters)){
                 $temp = [];
                 for($i = 0; $i < $maxStories; $i++){
@@ -62,6 +67,7 @@ class StorylistController extends Controller
                 $story_list = $temp;
             }
 
+            // filter the stories by visibility if the visibility filter is set
             if(!empty($filters) && array_key_exists('visibility', $filters)){
                 $temp = [];
                 for($i = 0; $i < $maxStories; $i++){
@@ -71,15 +77,21 @@ class StorylistController extends Controller
                 }
                 $story_list = $temp;
             }
-                
+
+            // attaches image assets to each story
+            $story_list = $this->attachImages($story_list);
+            $story_image_model = new StoryImage; // used for active web forms
+            $story_image_model->setScenario(StoryImage::SCENARIO_STORY_IMAGE);
+              
+            // render the story list  
             if(($maxStories = count($story_list)) > 0){
-                $visible_story_count = 0;
+                $visible_story_count = 0; // used to show statistics of the count of visible stories
                 for($i = 0; $i < $maxStories; $i++){
                     if($story_list[$i]['visible']){
                        $visible_story_count++; 
                     }
                 }
-                return $this->renderPartial('story_list.twig', ['story_list' => $story_list, 'story_count' => $maxStories, 'visible_story_count' => $visible_story_count]);
+                return $this->renderPartial('story_list.twig', ['story_list' => $story_list, 'story_count' => $maxStories, 'visible_story_count' => $visible_story_count, 'story_image_model' => $story_image_model]);
             } else {
                 return $this->renderPartial('story_list.twig');
             }
@@ -92,18 +104,39 @@ class StorylistController extends Controller
                 ->orderBy($orderBy)
                 ->asArray()
                 ->all();
+
+            // attaches image assets to each story
+            $story_list = $this->attachImages($story_list);
+            $story_image_model = new StoryImage; // used for active web forms
+            $story_image_model->setScenario(StoryImage::SCENARIO_STORY_IMAGE);
+
+            //print_r($story_list);
+
+            // render the story list 
             if(($maxStories = count($story_list)) > 0){
-                $visible_story_count = 0;
+                $visible_story_count = 0; // used to show statistics of the count of visible stories
                 for($i = 0; $i < $maxStories; $i++){
                     if($story_list[$i]['visible']){
                        $visible_story_count++; 
                     }
                 }
-                return $this->render('index.twig', ['story_list' => $story_list, 'story_count' => $maxStories, 'visible_story_count' => $visible_story_count]);
+                return $this->render('index.twig', ['story_list' => $story_list, 'story_count' => $maxStories, 'visible_story_count' => $visible_story_count, 'story_image_model' => $story_image_model]);
             } else {
                 return $this->render('index.twig');
             }
         }
+    }
+
+    /**
+     * Adds the story images to each story
+     */
+    private function attachImages($story_list){
+        if(($maxStories = count($story_list)) > 0){
+            for($i = 0; $i < $maxStories; $i++){
+                $story_list[$i]['images'] = Yii::$app->runAction('media/assets', ['story_id' => $story_list[$i]['story_id']]);
+            }
+        }
+        return $story_list;
     }
 
     /**
