@@ -1,0 +1,14 @@
+{% if media_assets %}
+	<label>Image List:</label><br />
+	<div class="image-list list-group">
+		{% for image in media_assets.images %}
+			<div data-storyimageid="{{ image.story_image_id }}" class="list-group-item">
+				<a data-imagesrc="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}">{{ image.image_name }}</a>
+				<input type="number" data-storyimageid="{{ image.story_image_id }}" value="{{image.order != '' ? image.order : 100 }}" name="order" style="display: none;" />
+				<button class="close" type="button" data-storyimageid="{{ image.story_image_id }}">×</button>
+			</div>
+		{% endfor %}
+	</div>
+{% else %}
+	<p align="center"><strong>There are no images for this story.</strong></p>
+{% endif%}

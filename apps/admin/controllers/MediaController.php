@@ -71,6 +71,28 @@ class MediaController extends Controller
     }
 
     /**
+     * load story image assets from the database and echos the result or returns the result as an array
+     */
+    public function actionImages($story_id = "") {
+        $model = new StoryImage;
+        $model->setScenario(StoryImage::SCENARIO_STORY_IMAGE);
+        if(Yii::$app->request->isAjax){
+            $story_values = Yii::$app->request->post('story_values');
+            // create asset list
+            $media_assets = [];
+            $media_assets['story_id'] = $story_values['story_id'];
+            $image_list = StoryImage::find()->where(['story_id' => $story_values['story_id']])->orderBy('order ASC')->asArray()->all();
+            $media_assets['images'] = $image_list;
+
+            // apply media assets to the view
+            echo $this->renderPartial('image_assets.twig', ['media_assets' => $media_assets]);
+        } else if(is_numeric($story_id)){
+            $image_list = StoryImage::find()->where(['story_id' => $story_id])->orderBy('order ASC')->asArray()->all();
+            return $image_list;
+        }
+    }
+
+    /**
      * Deletes a story image from the database and echos the result
      */
     public function actionDelete() {

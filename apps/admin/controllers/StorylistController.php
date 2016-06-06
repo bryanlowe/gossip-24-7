@@ -133,7 +133,7 @@ class StorylistController extends Controller
     private function attachImages($story_list){
         if(($maxStories = count($story_list)) > 0){
             for($i = 0; $i < $maxStories; $i++){
-                $story_list[$i]['images'] = Yii::$app->runAction('media/assets', ['story_id' => $story_list[$i]['story_id']]);
+                $story_list[$i]['images'] = Yii::$app->runAction('media/images', ['story_id' => $story_list[$i]['story_id']]);
             }
         }
         return $story_list;

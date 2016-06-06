@@ -2,23 +2,26 @@
 <!-- Image Block -->
 <div class="row">
 	<div class="col-lg-12">
-		{% if entry.images %}
-			<label>Image List:</label><br />
-			<div class="image-list list-group">
-				{% for image in entry.images %}
-					<div data-storyimageid="{{ image.story_image_id }}" class="list-group-item">
-						<a data-imagesrc="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}">{{ image.image_name }}</a>
-						<input type="number" data-storyimageid="{{ image.story_image_id }}" value="{{image.order != '' ? image.order : 100 }}" name="order" style="display: none;" />
-						<button class="close" type="button" data-storyimageid="{{ image.story_image_id }}">×</button>
-					</div>
-				{% endfor %}
-			</div>
-		{% else %}
-			<p align="center"><strong>There are no images for this story.</strong></p>
-		{% endif%}
+		<div class="image_assets" data-storyid="{{ entry.story_id }}">
+			{% if entry.images %}
+				<label>Image List:</label><br />
+				<div class="image-list list-group">
+					{% for image in entry.images %}
+						<div data-storyimageid="{{ image.story_image_id }}" class="list-group-item">
+							<a data-imagesrc="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}">{{ image.image_name }}</a>
+							<input type="number" data-storyimageid="{{ image.story_image_id }}" value="{{image.order != '' ? image.order : 100 }}" name="order" style="display: none;" />
+							<button class="close" type="button" data-storyimageid="{{ image.story_image_id }}">×</button>
+						</div>
+					{% endfor %}
+				</div>
+			{% else %}
+				<p align="center"><strong>There are no images for this story.</strong></p>
+			{% endif%}
+		</div>
 		{% set form = active_form_begin({
-		    'id' : 'upload-form',
+		    'id' : 'image-upload-form-' ~ entry.story_id,
 		    'options' : {
+		    	'data-storyid' : entry.story_id,
 		    	'class' : 'form-vertical',
 		    	'enctype' : 'multipart/form-data'
 		    },
@@ -29,7 +32,7 @@
 			{{ form.field(story_image_model, 'imageFile').fileInput({'accept' : 'image/*'}).label('Add New Image') | raw }}
 			{{ form.field(story_image_model, 'story_id').hiddenInput({'value' : entry.story_id}).label(false) | raw }}
 			<div class="form-group">
-		        <input type="submit" value="UPLOAD IMAGE" class="btn btn-primary" />
+		        <input data-storyid="{{ entry.story_id }}" type="button" value="UPLOAD IMAGE" class="btn btn-primary submit" />
 		    </div>
 		{{ active_form_end() }}
 	</div>

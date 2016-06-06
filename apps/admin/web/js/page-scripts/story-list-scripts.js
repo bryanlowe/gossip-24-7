@@ -1,3 +1,4 @@
+/***********************************START: Bootstrap Functions***********************************/
 $(function(){
     // Filter Button Functionality
     $('[data-sorttype="story_size"] > .btn, [data-sorttype="priority"] > .btn, [data-sorttype="story_date"] > .btn, [data-sorttype="visibility"] > .btn').click(function(){
@@ -22,10 +23,13 @@ $(function(){
     });
     // End Filter Button Functionality
 
+    // Start Utilities
     loadListUtilities();
     loadImageAssetUtilities();
 });
+/***********************************END: Bootstrap Functions***********************************/
 
+/***********************************START: Story List Functions***********************************/
 function refreshStoryList(){
     statusApp.showPleaseWait();
     var filters = {};
@@ -144,6 +148,9 @@ function updatePriority(story_values){
     });
 }
 
+/**
+ * loads the story lists utility functions
+ */
 function loadListUtilities(){
     $('[data-story][name="saveBtn"]').click(function(){
         var story_num = $(this).data('story');
@@ -184,53 +191,24 @@ function loadListUtilities(){
 
     $('[id^="story-tabs-"]').tabs();
 }
+/***********************************END: Story List Functions***********************************/
 
-function loadImageAssetUtilities(){
+/***********************************START: Image Tab Functions***********************************/
+function refreshImageMedia(story_num){
+    statusApp.showPleaseWait();
+    var values = {};
+    values['story_id'] = story_num;
+    $.post('/media/images', {story_values: values}, function(data){
+        $('[data-storyid="'+story_num+'"].image_assets').html(data);
+        refreshImageListFunctions();
+    }).done(function(){
+        statusApp.hidePleaseWait();
+    });
+}
+
+function refreshImageListFunctions(){
     $('button.close').click(function(){
         removeImage($(this).data('storyimageid'));
-    });
-    var files;
-    // Add events
-    $('input[type="file"]').on('change', prepareUpload);
-
-    // Grab the files and set them to our variable
-    function prepareUpload(event){
-      files = event.target.files;
-    }
-    // process the form
-    $('#upload-form').submit(function(event) {
-        statusApp.showPleaseWait();
-        // stop the form from submitting the normal way and refreshing the page
-        event.preventDefault();
-        // Create a formdata object and add the files
-        data = new FormData();
-        $.each(files, function(key, value)
-        {
-            data.append(key, value);
-        });
-        data.append('story_id', $('#storyimage-story_id').val());
-        data.append('StoryImage[imageFile]', $('#storyimage-imagefile').val());
-
-        // process the form
-        $.ajax({
-            url: '/media/upload',
-            type: 'POST',
-            data: data,
-            dataType: 'json',
-            processData: false, // Don't process the files
-            contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-            success: function(data, textStatus, jqXHR){  
-                statusApp.hidePleaseWait();
-
-                // report validation errors
-                reportFormErrors(data.errors);
-
-                //refresh media
-                if(data.save_success){
-                    refreshMedia($('#storyimage-story_id').val());
-                }
-            }
-        }); 
     });
     $('.image-list').sortable({
         stop: function(e, ui) {
@@ -247,4 +225,97 @@ function loadImageAssetUtilities(){
     $('a[data-imagesrc]').click(function(){
         popUpMsg('<p class="text-center"><img src="'+$(this).data('imagesrc')+'" style="max-width: 200px;" /></p>');
     });
+}
+
+function updateImageOrder(story_values){
+    statusApp.showPleaseWait();
+    $.post('/media/order', {story_values: story_values}, function(data){
+        data = $.parseJSON(data);
+     
+        statusApp.hidePleaseWait();
+        // report validation errors
+        reportFormErrors(data.errors);
+    });
+}
+
+/**
+ * remove images from the image tab
+ */
+function removeImage(story_image_num){
+    statusApp.showPleaseWait();
+    var values = {};
+    values['story_image_id'] = story_image_num;
+    $.post('/media/delete', {story_values: values}, function(data){
+        data = $.parseJSON(data);
+     
+        statusApp.hidePleaseWait();
+        // report validation errors
+        reportFormErrors(data.errors);
+    
+        if(data.save_success){
+            // if delete is success, give user feedback
+            $('div.list-group-item[data-storyimageid="'+story_image_num+'"]').remove();
+        }
+    });
+}
+
+/**
+ * loads the image assets utility functions
+ */
+function loadImageAssetUtilities(){
+    var files = null;
+    // Add events
+    $('input[type="file"]').on('change', prepareUpload);
+
+    // Grab the files and set them to our variable
+    function prepareUpload(event){
+      files = event.target.files;
+    }
+    $('input[type="button"].submit').click(function(){
+        $('form[id="image-upload-form-'+$(this).data('storyid')+'"]').submit();
+    });
+    // process the form
+    $('[id^="image-upload-form"]').submit(function(event) {
+        // stop the form from submitting the normal way and refreshing the page
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        if(files != null){
+            statusApp.showPleaseWait();
+            var story_id = $(this).data('storyid');
+
+            // Create a formdata object and add the files
+            var data = new FormData();
+            $.each(files, function(key, value)
+            {
+                data.append(key, value);
+            });
+            data.append('story_id', story_id);
+            data.append('StoryImage[imageFile]', $(this).find('#storyimage-imagefile').val());
+
+            // process the form
+            $.ajax({
+                url: '/media/upload',
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                processData: false, // Don't process the files
+                contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+                success: function(data, textStatus, jqXHR){  
+                    statusApp.hidePleaseWait();
+
+                    // report validation errors
+                    reportFormErrors(data.errors);
+
+                    //refresh media
+                    if(data.save_success){
+                        refreshImageMedia(story_id);
+                    }
+                }
+            });
+            files = null; // reset files
+        }
+    });
+    refreshImageListFunctions();
 } 
+/***********************************END: Image Tab Functions***********************************/
