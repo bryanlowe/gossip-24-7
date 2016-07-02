@@ -36,17 +36,17 @@
 		          	<div id="story-tabs-{{entry.story_id}}" class="panel-body">
 		          		<ul>
 						    <li><a href="#edit-story-fragment-{{entry.story_id}}"><span>Edit Story</span></a></li>
-						    <li><a href="#edit-images-fragment-{{entry.story_id}}"><span>Upload/Edit Images</span></a></li>
 						    <li><a href="#edit-tags-fragment-{{entry.story_id}}"><span>Add/Edit Tags</span></a></li>
+						    <li><a href="#edit-images-fragment-{{entry.story_id}}"><span>Upload/Edit Images</span></a></li>
 						</ul>
 		            	<div id="edit-story-fragment-{{entry.story_id}}" class="row">
 		            		{% include "story_fragment.twig" %}
 						</div>
-						<div id="edit-images-fragment-{{entry.story_id}}" class="row">
-		            		{% include "image_fragment.twig" %}
-						</div>
 						<div id="edit-tags-fragment-{{entry.story_id}}" class="row">
 		            		{% include "tag_fragment.twig" %}
+						</div>
+						<div id="edit-images-fragment-{{entry.story_id}}" class="row">
+		            		{% include "image_fragment.twig" %}
 						</div>
 		          	</div>
 		        </div>

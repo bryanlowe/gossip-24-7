@@ -1,0 +1,19 @@
+{{ set(this, 'title', 'Gossip 24/7 Admin - Celebrity Tags') }}
+{{ this.registerJsFile('/js/jquery.min.js') }}
+{{ this.registerJsFile('/js/page-scripts/tag-scripts.js') }}
+<div id="story-tags" class="panel-body">
+	<ul>
+	    <li><a href="#create-story-tag-fragment"><span>Create Celebrity Tag</span></a></li>
+	    <li><a href="#edit-story-tag-fragment"><span>Edit Celebrity Tag</span></a></li>
+	    <li><a href="#generate-story-tag-fragment"><span>Generate Celebrity Tag</span></a></li>
+	</ul>
+	<div id="create-story-tag-fragment" class="row">
+		{% include "create_tag_fragment.twig" %}
+	</div>
+	<div id="edit-story-tag-fragment" class="row">
+		{% include "edit_tag_fragment.twig" %}
+	</div>
+	<div id="generate-story-tag-fragment" class="row">
+		{% include "generate_tag_fragment.twig" %}
+	</div>
+</div>

@@ -402,3 +402,7 @@ label[for="priority"] {
 .panel-green i.fa {
     color: #333;
 }
+
+a[data-imagesrc] {
+    color: #000;
+}

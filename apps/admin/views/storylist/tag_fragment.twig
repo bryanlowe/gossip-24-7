@@ -1,0 +1,38 @@
+<!-- Tag Block -->
+<div class="row">
+	<div class="col-lg-6">
+		<div class="tag_assets" data-storyid="{{ entry.story_id }}">
+			{% if entry.tags %}
+				<label>Tag List:</label><br />
+				<div class="tag-list list-group">
+					{% for tag in entry.tags %}
+						<div data-storytagid="{{ tag.story_tag_id }}" class="list-group-item">
+							{{ tag.tag_name }}
+							<button class="close" type="button" data-storytagid="{{ tag.story_tag_id }}">×</button>
+						</div>
+					{% endfor %}
+				</div>
+			{% else %}
+				<p align="center"><strong>There are no tags for this story.</strong></p>
+			{% endif%}
+		</div>
+	</div>
+	<div class="col-lg-6">
+		<div class="tag_assets" data-storyid="{{ entry.story_id }}">
+			{% if entry.tags %}
+				<label>Tag List:</label><br />
+				<div class="tag-list list-group">
+					{% for tag in entry.tags %}
+						<div data-storytagid="{{ tag.story_tag_id }}" class="list-group-item">
+							{{ tag.tag_name }}
+							<button class="close" type="button" data-storytagid="{{ tag.story_tag_id }}">×</button>
+						</div>
+					{% endfor %}
+				</div>
+			{% else %}
+				<p align="center"><strong>There are no tags for this story.</strong></p>
+			{% endif%}
+		</div>
+	</div>
+</div>
+<!-- End tag Block -->

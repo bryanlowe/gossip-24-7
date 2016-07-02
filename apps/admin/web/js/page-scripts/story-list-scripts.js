@@ -198,7 +198,7 @@ function refreshImageMedia(story_num){
     statusApp.showPleaseWait();
     var values = {};
     values['story_id'] = story_num;
-    $.post('/media/images', {story_values: values}, function(data){
+    $.post('/image/assets', {story_values: values}, function(data){
         $('[data-storyid="'+story_num+'"].image_assets').html(data);
         refreshImageListFunctions();
     }).done(function(){
@@ -229,7 +229,7 @@ function refreshImageListFunctions(){
 
 function updateImageOrder(story_values){
     statusApp.showPleaseWait();
-    $.post('/media/order', {story_values: story_values}, function(data){
+    $.post('/image/order', {story_values: story_values}, function(data){
         data = $.parseJSON(data);
      
         statusApp.hidePleaseWait();
@@ -245,7 +245,7 @@ function removeImage(story_image_num){
     statusApp.showPleaseWait();
     var values = {};
     values['story_image_id'] = story_image_num;
-    $.post('/media/delete', {story_values: values}, function(data){
+    $.post('/image/delete', {story_values: values}, function(data){
         data = $.parseJSON(data);
      
         statusApp.hidePleaseWait();
@@ -295,7 +295,7 @@ function loadImageAssetUtilities(){
 
             // process the form
             $.ajax({
-                url: '/media/upload',
+                url: '/image/upload',
                 type: 'POST',
                 data: data,
                 dataType: 'json',

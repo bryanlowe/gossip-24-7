@@ -1,0 +1,9 @@
+{% if tag_list %}
+	{% for entry in tag_list %}
+		<a data-tag="{{entry.story_tag_id}}" data-active="false" class="list-group-item"><i class="select-icon fa fa-circle-o fa-fw text-danger"></i> 
+			{{ entry.tag_name|length > 25 ? entry.tag_name|slice(0, 25) ~ '...' : entry.tag_name  }}
+		</a>
+	{% endfor %}	
+{% else %}
+	<p align="center"><strong>Move along! Nothing to see here!</strong></p>
+{% endif %}
