@@ -7,6 +7,7 @@ use app\models\Story;
 use app\models\StoryPriority;
 use app\models\StoryImage;
 use app\models\StoryTag;
+use app\models\StoryTagList;
 
 class StorylistController extends Controller
 {
@@ -83,6 +84,9 @@ class StorylistController extends Controller
             $story_list = $this->attachImages($story_list);
             $story_image_model = new StoryImage; // used for active web forms
             $story_image_model->setScenario(StoryImage::SCENARIO_STORY_IMAGE);
+
+            // attaches tag assets to each story
+            $story_list = $this->attachTags($story_list);
               
             // render the story list  
             if(($maxStories = count($story_list)) > 0){
@@ -111,7 +115,8 @@ class StorylistController extends Controller
             $story_image_model = new StoryImage; // used for active web forms
             $story_image_model->setScenario(StoryImage::SCENARIO_STORY_IMAGE);
 
-            //print_r($story_list);
+            // attaches tag assets to each story
+            $story_list = $this->attachTags($story_list);
 
             // render the story list 
             if(($maxStories = count($story_list)) > 0){
@@ -135,6 +140,50 @@ class StorylistController extends Controller
         if(($maxStories = count($story_list)) > 0){
             for($i = 0; $i < $maxStories; $i++){
                 $story_list[$i]['images'] = Yii::$app->runAction('image/assets', ['id' => $story_list[$i]['story_id']]);
+            }
+        }
+        return $story_list;
+    }
+
+    /**
+     * Adds the story tags to each story
+     */
+    private function attachTags($story_list){
+        if(($maxStories = count($story_list)) > 0){
+            for($i = 0; $i < $maxStories; $i++){
+                $story_tag_id_list = StoryTagList::findAll(['story_id' => $story_list[$i]['story_id']]);
+                if(($maxStoryTags = count($story_tag_id_list)) > 0){
+                    /**************COLLECT STORY TAGS ASSOCIATED WITH THIS STORY - START***************/
+                    $story_tag_id_set = array();
+                    $story_list[$i]['existing_tag_list'] = array();
+                    for($j = 0; $j < $maxStoryTags; $j++){
+                        $story_tag = StoryTag::find()
+                            ->select('*')
+                            ->where(['story_tag_id' => $story_tag_id_list[$j]['story_tag_id']])
+                            ->asArray()
+                            ->one();
+                        $story_tag['story_tag_list_id'] = $story_tag_id_list[$j]['story_tag_list_id'];
+                        $story_list[$i]['existing_tag_list'][] = $story_tag;
+                        $story_tag_id_set[] = $story_tag_id_list[$j]['story_tag_id'];
+                    }
+                    /**************COLLECT STORY TAGS ASSOCIATED WITH THIS STORY - END***************/
+
+                    /**************COLLECT STORY TAGS THAT ARE NOT ASSOCIATED WITH THIS STORY - START***************/
+                    $story_list[$i]['available_tag_list'] = StoryTag::find()
+                        ->select('story_tag_id, tag_name')
+                        ->where(['not', ['story_tag_id' => $story_tag_id_set]])
+                        ->orderBy('tag_name ASC')
+                        ->asArray()
+                        ->all();
+                    /**************COLLECT STORY TAGS THAT ARE NOT ASSOCIATED WITH THIS STORY - END***************/
+                } else {
+                    $story_list[$i]['existing_tag_list'] = array();    
+                    $story_list[$i]['available_tag_list'] = StoryTag::find()
+                        ->select('story_tag_id, tag_name')
+                        ->orderBy('tag_name ASC')
+                        ->asArray()
+                        ->all();
+                }
             }
         }
         return $story_list;
@@ -169,10 +218,12 @@ class StorylistController extends Controller
         $result = $model->delete();
         $errors = $model->getErrors();
         if($result){
+            // Delete all priority associated with this story
             $storyPriority = StoryPriority::findOne(['story_id' => $story_values['story_id']]);
             $result = $storyPriority->delete();
             $errors = $storyPriority->getErrors();
 
+            // Delete all images associated with this story
             $image_list = StoryImage::findAll(['story_id' => $story_values['story_id']]);
             foreach($image_list as $image){
                 $storyImage = StoryImage::findOne($image['story_image_id']);
@@ -180,6 +231,9 @@ class StorylistController extends Controller
                 $errors = $storyImage->getErrors();
                 unlink('/home/gossip24/public_html/uploads/story/' . $storyImage->story_id . '/images/'.$storyImage->image_name);
             }
+
+            // Delete all tag associations to this story
+            StoryTagList::deleteAll(['story_id' => $story_values['story_id']]);
         }
         echo json_encode(['save_success' => $result, 'errors' => $errors]);
     }
@@ -211,13 +265,15 @@ class StorylistController extends Controller
             $i = 0;
             do{
                 $model = StoryPriority::findOne($story_values[$i]['story_priority_id']);
-                $model->setScenario(StoryPriority::SCENARIO_STORY_PRIORITY);
-                if($model->priority != $story_values[$i]['priority']){
-                    $model->priority = $story_values[$i]['priority'];
-                    $save_success = $model->save(true, ['priority']);
-                    $errors = $model->getErrors();
-                } else {
-                    $save_success = 1;  
+                if(!empty($model->attributes)){
+                    $model->setScenario(StoryPriority::SCENARIO_STORY_PRIORITY);
+                    if($model->priority != $story_values[$i]['priority']){
+                        $model->priority = $story_values[$i]['priority'];
+                        $save_success = $model->save(true, ['priority']);
+                        $errors = $model->getErrors();
+                    } else {
+                        $save_success = 1;  
+                    }
                 }
                 $i++;
             } while($i < $maxStories && $save_success);
@@ -225,5 +281,72 @@ class StorylistController extends Controller
         } else {
             echo json_encode(['save_success' => 1, 'errors' => []]);
         }
+    }
+
+    /**
+     * Adds a tag to the story 
+     */
+    public function actionAddtag() {
+        $story_values = Yii::$app->request->post('story_values');
+        $model = new StoryTagList;
+        $model->setScenario(StoryTagList::SCENARIO_STORY_TAG_LIST);
+        $model->attributes = $story_values;
+        echo json_encode(['save_success' => $model->save(), 'errors' => $model->getErrors()]);
+    }
+
+    /**
+     * Deletes a story tag from a story in the database and echos the result
+     */
+    public function actionRemovetag() {
+        $story_values = Yii::$app->request->post('story_values');
+        $model = StoryTagList::findOne($story_values['story_tag_list_id']);
+        $story_id = $model->story_id;
+        echo json_encode(['save_success' => $model->delete(), 'errors' => $model->getErrors(), 'story_id' => $story_id]);
+    }
+
+    /**
+     * Reloads the tag list for the specific story
+     */
+    public function actionReloadtags(){
+        $story_values = Yii::$app->request->post('story_values');
+        $story_entry = Story::find()
+            ->select('*')
+            ->where(['story_id' => $story_values['story_id']])
+            ->asArray()
+            ->one();
+        $story_tag_id_list = StoryTagList::findAll(['story_id' => $story_values['story_id']]);
+        if(($maxStoryTags = count($story_tag_id_list)) > 0){
+            /**************COLLECT STORY TAGS ASSOCIATED WITH THIS STORY - START***************/
+            $story_tag_id_set = array();
+            $story_entry['existing_tag_list'] = array();
+            for($j = 0; $j < $maxStoryTags; $j++){
+                $story_tag = StoryTag::find()
+                    ->select('*')
+                    ->where(['story_tag_id' => $story_tag_id_list[$j]['story_tag_id']])
+                    ->asArray()
+                    ->one();
+                $story_tag['story_tag_list_id'] = $story_tag_id_list[$j]['story_tag_list_id'];
+                $story_entry['existing_tag_list'][] = $story_tag;
+                $story_tag_id_set[] = $story_tag_id_list[$j]['story_tag_id'];
+            }
+            /**************COLLECT STORY TAGS ASSOCIATED WITH THIS STORY - END***************/
+
+            /**************COLLECT STORY TAGS THAT ARE NOT ASSOCIATED WITH THIS STORY - START***************/
+            $story_entry['available_tag_list'] = StoryTag::find()
+                ->select('story_tag_id, tag_name')
+                ->where(['not', ['story_tag_id' => $story_tag_id_set]])
+                ->orderBy('tag_name ASC')
+                ->asArray()
+                ->all();
+            /**************COLLECT STORY TAGS THAT ARE NOT ASSOCIATED WITH THIS STORY - END***************/
+        } else {
+            $story_entry['existing_tag_list'] = array();    
+            $story_entry['available_tag_list'] = StoryTag::find()
+                ->select('story_tag_id, tag_name')
+                ->orderBy('tag_name ASC')
+                ->asArray()
+                ->all();
+        }
+        return $this->renderPartial('tag_fragment.twig', ['entry' => $story_entry]);
     }
 }

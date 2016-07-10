@@ -26,6 +26,7 @@ $(function(){
     // Start Utilities
     loadListUtilities();
     loadImageAssetUtilities();
+    loadStoryTagAssetUtilities();
 });
 /***********************************END: Bootstrap Functions***********************************/
 
@@ -207,7 +208,7 @@ function refreshImageMedia(story_num){
 }
 
 function refreshImageListFunctions(){
-    $('button.close').click(function(){
+    $('button[data-storyimageid].close').click(function(){
         removeImage($(this).data('storyimageid'));
     });
     $('.image-list').sortable({
@@ -319,3 +320,60 @@ function loadImageAssetUtilities(){
     refreshImageListFunctions();
 } 
 /***********************************END: Image Tab Functions***********************************/
+
+/***********************************START: Story Tag Tab Functions***********************************/
+/**
+ * loads the story tag assets utility functions
+ */
+function loadStoryTagAssetUtilities(){
+    $('button[data-storytaglistid].close').click(function(){
+        removeStoryTag($(this).data('storytaglistid'));
+    });
+    $('[data-newstorytagid]').click(function(){
+        var values = {};
+        values['story_id'] = $(this).data('storyid');
+        values['story_tag_id'] = $(this).data('newstorytagid');
+        $.post('/storylist/addtag', {story_values: values}, function(data){
+            data = $.parseJSON(data);
+            // report validation errors
+            reportFormErrors(data.errors);
+            if(data.save_success){
+                // if save is success, give user feedback
+                reloadStoryTagList(values['story_id']);
+            }
+        });
+    });
+}
+/**
+ * Loads the story tag list for one story
+ */
+function reloadStoryTagList(story_id){
+    statusApp.showPleaseWait();
+    var values = {};
+    values['story_id'] = story_id;
+    $.post('/storylist/reloadtags', {story_values: values}, function(data){
+        $('[id^="edit-tags-fragment-'+story_id+'"]').html(data);
+        loadStoryTagAssetUtilities();
+    }).done(function(){
+        statusApp.hidePleaseWait();
+    });
+}
+/**
+ * Removes a story tag from a story
+ */
+function removeStoryTag(story_tag_list_id){
+    if(Number(story_tag_list_id) > 0){
+        var values = {};
+        values['story_tag_list_id'] = story_tag_list_id;
+        $.post('/storylist/removetag', {story_values: values}, function(data){
+            data = $.parseJSON(data);
+            // report validation errors
+            reportFormErrors(data.errors);
+            if(data.save_success){
+                // if save is success, give user feedback
+                reloadStoryTagList(data.story_id);
+            }
+        });
+    }
+}
+/***********************************END: Story Tag Tab Functions***********************************/

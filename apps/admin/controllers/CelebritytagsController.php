@@ -4,6 +4,7 @@ use Yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\models\StoryTag;
+use app\models\StoryTagList;
 
 class CelebritytagsController extends Controller
 {
@@ -90,7 +91,15 @@ class CelebritytagsController extends Controller
      */
     public function actionDelete() {
         $story_values = Yii::$app->request->post('story_values');
-        $model = StoryTag::findOne($story_values['story_tag_id']);
-        echo json_encode(['save_success' => $model->delete(), 'errors' => $model->getErrors()]);
+        if(is_numeric($story_values['story_tag_id'])){
+            $model = StoryTag::findOne($story_values['story_tag_id']);
+            $result = $model->delete();
+            $errors = $model->getErrors();
+            if($result){
+                StoryTagList::deleteAll(['story_tag_id' => $story_values['story_tag_id']]);
+            }
+            echo json_encode(['save_success' => $result, 'errors' => $errors]);
+        }
+        
     }
 }

@@ -3,7 +3,7 @@ $(function() {
        saveStoryTag();
     });
     $('[id="story-tags"]').tabs();
-    $('[href="#edit-story-tag-fragment"').click(function(){
+    $('[href="#edit-story-tag-fragment"]').click(function(){
         refreshEditTab();
     });
     tagListUtilities();
@@ -41,7 +41,6 @@ function tagListUtilities(){
  */
 function refreshEditTab(){
     statusApp.showPleaseWait();
-    var values = {};
     $.post('/celebritytags/taglist', function(data){
         $('#edit-story-tag-fragment').html(data);
         tagListUtilities();

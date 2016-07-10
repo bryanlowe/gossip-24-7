@@ -18,6 +18,10 @@ body {
     background-color: #fff;
 }
 
+.cursor-pointer {
+    cursor: pointer !important;
+}
+
 @media(min-width:768px) {
     #page-wrapper {
         position: inherit;
