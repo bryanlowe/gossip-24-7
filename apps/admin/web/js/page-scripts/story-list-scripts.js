@@ -26,6 +26,7 @@ $(function(){
     // Start Utilities
     loadListUtilities();
     loadImageAssetUtilities();
+    loadAudioAssetUtilities();
     loadStoryTagAssetUtilities();
 });
 /***********************************END: Bootstrap Functions***********************************/
@@ -201,7 +202,7 @@ function refreshImageMedia(story_num){
     values['story_id'] = story_num;
     $.post('/image/assets', {story_values: values}, function(data){
         $('[data-storyid="'+story_num+'"].image_assets').html(data);
-        refreshImageListFunctions();
+        loadImageAssetUtilities();
     }).done(function(){
         statusApp.hidePleaseWait();
     });
@@ -264,15 +265,15 @@ function removeImage(story_image_num){
  * loads the image assets utility functions
  */
 function loadImageAssetUtilities(){
-    var files = null;
+    var imagefiles = null;
     // Add events
-    $('input[type="file"]').on('change', prepareUpload);
+    $('input[id="storyimage-imagefile"]').on('change', prepareUpload);
 
     // Grab the files and set them to our variable
     function prepareUpload(event){
-      files = event.target.files;
+      imagefiles = event.target.files;
     }
-    $('input[type="button"].submit').click(function(){
+    $('form[id^="image-upload-form-"] input[type="button"].submit').click(function(){
         $('form[id="image-upload-form-'+$(this).data('storyid')+'"]').submit();
     });
     // process the form
@@ -281,13 +282,13 @@ function loadImageAssetUtilities(){
         event.preventDefault();
         event.stopImmediatePropagation();
 
-        if(files != null){
+        if(imagefiles != null){
             statusApp.showPleaseWait();
             var story_id = $(this).data('storyid');
 
             // Create a formdata object and add the files
             var data = new FormData();
-            $.each(files, function(key, value)
+            $.each(imagefiles, function(key, value)
             {
                 data.append(key, value);
             });
@@ -314,7 +315,7 @@ function loadImageAssetUtilities(){
                     }
                 }
             });
-            files = null; // reset files
+            imagefiles = null; // reset files
         }
     });
     refreshImageListFunctions();
@@ -377,3 +378,107 @@ function removeStoryTag(story_tag_list_id){
     }
 }
 /***********************************END: Story Tag Tab Functions***********************************/
+
+/***********************************START: Audio Tab Functions***********************************/
+function refreshAudioMedia(story_num){
+    statusApp.showPleaseWait();
+    var values = {};
+    values['story_id'] = story_num;
+    $.post('/audio/assets', {story_values: values}, function(data){
+        $('[data-storyid="'+story_num+'"].audio_assets').html(data);
+        loadAudioAssetUtilities();
+    }).done(function(){
+        statusApp.hidePleaseWait();
+    });
+}
+
+function refreshAudioFunctions(){
+    $('button[data-storyaudioid].close').click(function(){
+        removeAudio($(this).data('storyaudioid'), $(this).data('storyid'));
+    });
+    $('a[data-audiosrc]').click(function(){
+        popUpMsg('<p class="text-center"><audio controls><source src="'+$(this).data('audiosrc')+'" type="audio/mpeg">Your browser does not support the audio element.</audio></p>');
+    });
+}
+
+/**
+ * remove audio from the audio tab
+ */
+function removeAudio(story_audio_num, story_num){
+    statusApp.showPleaseWait();
+    var values = {};
+    values['story_audio_id'] = story_audio_num;
+    $.post('/audio/delete', {story_values: values}, function(data){
+        data = $.parseJSON(data);
+     
+        statusApp.hidePleaseWait();
+        // report validation errors
+        reportFormErrors(data.errors);
+    
+        if(data.save_success){
+            // if delete is success, give user feedback
+            refreshAudioMedia(story_num);
+        }
+    });
+}
+
+/**
+ * loads the audio assets utility functions
+ */
+function loadAudioAssetUtilities(){
+    var audiofiles = null;
+    // Add events
+    $('input[id="storyaudio-audiofile"]').on('change', prepareAudioUpload);
+
+    // Grab the files and set them to our variable
+    function prepareAudioUpload(event){
+        audiofiles = event.target.files;
+    }
+    $('form[id^="audio-upload-form-"] input[type="button"].submit').click(function(){
+        $('form[id="audio-upload-form-'+$(this).data('storyid')+'"]').submit();
+    });
+    // process the form
+    $('[id^="audio-upload-form"]').submit(function(event) {
+        // stop the form from submitting the normal way and refreshing the page
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        if(audiofiles != null){
+            statusApp.showPleaseWait();
+            var story_id = $(this).data('storyid');
+
+            // Create a formdata object and add the files
+            var data = new FormData();
+            $.each(audiofiles, function(key, value)
+            {
+                data.append(key, value);
+            });
+            data.append('story_id', story_id);
+            data.append('StoryAudio[audioFile]', $(this).find('#storyaudio-audiofile').val());
+
+            // process the form
+            $.ajax({
+                url: '/audio/upload',
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                processData: false, // Don't process the files
+                contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+                success: function(data, textStatus, jqXHR){  
+                    statusApp.hidePleaseWait();
+
+                    // report validation errors
+                    reportFormErrors(data.errors);
+
+                    //refresh media
+                    if(data.save_success){
+                        refreshAudioMedia(story_id);
+                    }
+                }
+            });
+            audiofiles = null; // reset files
+        }
+    });
+    refreshAudioFunctions();
+} 
+/***********************************END: Audio Tab Functions***********************************/

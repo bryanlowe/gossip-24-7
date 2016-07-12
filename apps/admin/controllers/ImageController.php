@@ -39,7 +39,7 @@ class ImageController extends Controller implements MediaController
     public function actionAssets($id = "") {
         $model = new StoryImage;
         $model->setScenario(StoryImage::SCENARIO_STORY_IMAGE);
-        if(Yii::$app->request->isAjax){
+        if(Yii::$app->request->isAjax && !is_numeric($id)){
             $story_values = Yii::$app->request->post('story_values');
             // create asset list
             $media_assets = [];

@@ -1,0 +1,39 @@
+{{ use('yii\widgets\ActiveForm')}}
+<!-- Audio Block -->
+<div class="row">
+	<div class="col-lg-12">
+		<div class="audio_assets" data-storyid="{{ entry.story_id }}">
+			{% if entry.audio %}
+				<label>Audio File:</label><br />
+				<div class="audio-list list-group">
+					{% for audio in entry.audio %}
+						<div data-storyaudioid="{{ audio.story_audio_id }}" class="list-group-item">
+							<a data-audiosrc="http://media.gossip247.com/story/{{ audio.story_id }}/audio/{{ audio.audio_name }}">{{ audio.audio_name }}</a>
+							<button class="close" type="button" data-storyaudioid="{{ audio.story_audio_id }}" data-storyid="{{ audio.story_id }}">×</button>
+						</div>
+					{% endfor %}
+				</div>
+			{% else %}
+				<p align="center"><strong>There is no audio for this story.</strong></p>
+			{% endif%}
+		</div>
+		{% set form = active_form_begin({
+		    'id' : 'audio-upload-form-' ~ entry.story_id,
+		    'options' : {
+		    	'data-storyid' : entry.story_id,
+		    	'class' : 'form-vertical',
+		    	'enctype' : 'multipart/form-data'
+		    },
+		    'action' : '/audio/upload',
+		    'enableAjaxValidation' : true,
+		    'ajaxParam' : 'ajax'
+		}) %}
+			{{ form.field(story_audio_model, 'audioFile').fileInput({'accept' : 'audio/*'}).label('Add New Audio') | raw }}
+			{{ form.field(story_audio_model, 'story_id').hiddenInput({'value' : entry.story_id}).label(false) | raw }}
+			<div class="form-group">
+		        <input data-storyid="{{ entry.story_id }}" type="button" value="UPLOAD AUDIO" class="btn btn-primary submit" />
+		    </div>
+		{{ active_form_end() }}
+	</div>
+</div>
+<!-- End Audio Block -->

@@ -8,6 +8,7 @@ use app\models\StoryPriority;
 use app\models\StoryImage;
 use app\models\StoryTag;
 use app\models\StoryTagList;
+use app\models\StoryAudio;
 
 class StorylistController extends Controller
 {
@@ -67,6 +68,7 @@ class StorylistController extends Controller
                     }
                 }
                 $story_list = $temp;
+                $maxStories = count($story_list);
             }
 
             // filter the stories by visibility if the visibility filter is set
@@ -78,12 +80,18 @@ class StorylistController extends Controller
                     }
                 }
                 $story_list = $temp;
+                $maxStories = count($story_list);
             }
 
             // attaches image assets to each story
             $story_list = $this->attachImages($story_list);
             $story_image_model = new StoryImage; // used for active web forms
             $story_image_model->setScenario(StoryImage::SCENARIO_STORY_IMAGE);
+
+            // attaches audio assets to each story
+            $story_list = $this->attachAudio($story_list);
+            $story_audio_model = new StoryAudio; // used for active web forms
+            $story_audio_model->setScenario(StoryAudio::SCENARIO_STORY_AUDIO);
 
             // attaches tag assets to each story
             $story_list = $this->attachTags($story_list);
@@ -96,7 +104,7 @@ class StorylistController extends Controller
                        $visible_story_count++; 
                     }
                 }
-                return $this->renderPartial('story_list.twig', ['story_list' => $story_list, 'story_count' => $maxStories, 'visible_story_count' => $visible_story_count, 'story_image_model' => $story_image_model]);
+                return $this->renderPartial('story_list.twig', ['story_list' => $story_list, 'story_count' => $maxStories, 'visible_story_count' => $visible_story_count, 'story_image_model' => $story_image_model, 'story_audio_model' => $story_audio_model]);
             } else {
                 return $this->renderPartial('story_list.twig');
             }
@@ -115,6 +123,12 @@ class StorylistController extends Controller
             $story_image_model = new StoryImage; // used for active web forms
             $story_image_model->setScenario(StoryImage::SCENARIO_STORY_IMAGE);
 
+
+            // attaches audio assets to each story
+            $story_list = $this->attachAudio($story_list);
+            $story_audio_model = new StoryAudio; // used for active web forms
+            $story_audio_model->setScenario(StoryAudio::SCENARIO_STORY_AUDIO);
+
             // attaches tag assets to each story
             $story_list = $this->attachTags($story_list);
 
@@ -126,11 +140,23 @@ class StorylistController extends Controller
                        $visible_story_count++; 
                     }
                 }
-                return $this->render('index.twig', ['story_list' => $story_list, 'story_count' => $maxStories, 'visible_story_count' => $visible_story_count, 'story_image_model' => $story_image_model]);
+                return $this->render('index.twig', ['story_list' => $story_list, 'story_count' => $maxStories, 'visible_story_count' => $visible_story_count, 'story_image_model' => $story_image_model, 'story_audio_model' => $story_audio_model]);
             } else {
                 return $this->render('index.twig');
             }
         }
+    }
+
+    /**
+     * Adds the story audio to each story
+     */
+    private function attachAudio($story_list){
+        if(($maxStories = count($story_list)) > 0){
+            for($i = 0; $i < $maxStories; $i++){
+                $story_list[$i]['audio'] = Yii::$app->runAction('audio/assets', ['id' => $story_list[$i]['story_id']]);
+            }
+        }
+        return $story_list;
     }
 
     /**
@@ -230,6 +256,15 @@ class StorylistController extends Controller
                 $result = $storyImage->delete();
                 $errors = $storyImage->getErrors();
                 unlink('/home/gossip24/public_html/uploads/story/' . $storyImage->story_id . '/images/'.$storyImage->image_name);
+            }
+
+            // Delete all audio associated with this story
+            $audio_list = StoryAudio::findAll(['story_id' => $story_values['story_id']]);
+            foreach($audio_list as $audio){
+                $storyAudio = StoryAudio::findOne($audio['story_audio_id']);
+                $result = $storyAudio->delete();
+                $errors = $storyAudio->getErrors();
+                unlink('/home/gossip24/public_html/uploads/story/' . $storyAudio->story_id . '/audio/'.$storyAudio->audio_name);
             }
 
             // Delete all tag associations to this story
