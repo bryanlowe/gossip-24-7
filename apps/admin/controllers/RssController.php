@@ -1,6 +1,6 @@
 <?php
 namespace app\controllers;
-require('../vendor/rss_php/rss_php.php');
+require(dirname(__DIR__) . '/vendor/rss_php/rss_php.php');
 use Yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;

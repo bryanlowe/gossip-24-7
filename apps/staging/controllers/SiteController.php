@@ -9,6 +9,8 @@ use app\models\LoginForm;
 use app\models\Story;
 use app\models\StoryPriority;
 use app\models\StoryImage;
+use app\models\StoryTag;
+use app\models\StoryTagList;
 
 /**
  * Controls the homepage of the site
@@ -65,6 +67,7 @@ class SiteController extends Controller
             ->asArray()
             ->limit(1)
             ->one();
+        $main_story = $this->attachTags($main_story);
 
         // create story list
         $story_list = Story::find()
@@ -76,12 +79,41 @@ class SiteController extends Controller
             ->orderBy('priority ASC')
             ->asArray()
             ->all();
+        $story_list = $this->attachTags($story_list);
         $story_list = $this->formatStoryList($story_list);
         if(count($story_list) > 0 || count($main_story) > 0){
             return $this->render('index.twig', ['story_list' => $story_list, 'main_story' => $main_story]);
         } else {
             return $this->render('index.twig');
         }
+    }
+
+    /**
+     * Adds the story tags to each story
+     */
+    private function attachTags($story_list){
+        if(($maxStories = count($story_list)) > 0){
+            for($i = 0; $i < $maxStories; $i++){
+                $story_tag_id_list = StoryTagList::findAll(['story_id' => $story_list[$i]['story_id']]);
+                if(($maxStoryTags = count($story_tag_id_list)) > 0){
+                    /**************COLLECT STORY TAGS ASSOCIATED WITH THIS STORY - START***************/
+                    $story_tag_id_set = array();
+                    for($j = 0; $j < $maxStoryTags; $j++){
+                        $story_tag_id_set[] = $story_tag_id_list[$j]['story_tag_id'];
+                    }
+                    $story_list[$i]['tags'] = StoryTag::find()
+                        ->select('*')
+                        ->where(['in', 'story_tag_id', $story_tag_id_set])
+                        ->orderBy('tag_name ASC')
+                        ->asArray()
+                        ->all();
+                    /**************COLLECT STORY TAGS ASSOCIATED WITH THIS STORY - END***************/
+                } else {
+                    $story_list[$i]['tags'] = array();    
+                }
+            }
+        }
+        return $story_list;
     }
 
     /**

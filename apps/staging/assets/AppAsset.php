@@ -21,6 +21,7 @@ class AppAsset extends AssetBundle
         '/css/flexslider.css',
         '/css/bootstrap.css',
         '/css/popuo-box.css',
+        '/css/font-awesome.min.css',
         '/css/style.css'
     ];
     public $js = [

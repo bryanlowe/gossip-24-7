@@ -81,7 +81,14 @@ h3 a.title:hover, h4 a.title:hover {
 						<p>{{ main_story.description|raw }}</p>
 					{% endif %}
 				</div>
-			</div>		
+			</div>
+			{% if main_story.tags|length > 0 %}	
+				<div class="inline">
+					{% for tag in main_story.tags %}
+						<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> {{ tag.tag_name }}</span> 
+					{% endfor %}
+				</div>
+			{% endif %}	
 			<div class="clearfix"></div>
 		</div>
 	{% endif %}
@@ -112,6 +119,13 @@ h3 a.title:hover, h4 a.title:hover {
 													<p>{{ story_h.description|raw }}</p>
 												{% endif %}
 											</div>
+											{% if story_h.tags|length > 0 %}	
+												<div class="inline">
+													{% for tag in story_h.tags %}
+														<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> {{ tag.tag_name }}</span> 
+													{% endfor %}
+												</div>
+											{% endif %}
 										</div>
 										<div class="clearfix"></div>
 									{% endfor %}
@@ -132,6 +146,13 @@ h3 a.title:hover, h4 a.title:hover {
 													<p>{{ story_v.description|raw }}</p>
 												{% endif %}
 											</div>
+											{% if story_v.tags|length > 0 %}	
+												<div class="block">
+													{% for tag in story_v.tags %}
+														<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> {{ tag.tag_name }}</span><br />
+													{% endfor %}
+												</div>
+											{% endif %}
 										</div>
 										{% if loop.index % 3 == 0 %}
 											<div class="clearfix"></div>
@@ -160,6 +181,13 @@ h3 a.title:hover, h4 a.title:hover {
 										<p>{{ side_story.description|raw }}</p>
 									{% endif %}
 								</div>
+								{% if side_story.tags|length > 0 %}	
+									<div class="inline">
+										{% for tag in side_story.tags %}
+											<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> {{ tag.tag_name }}</span><br />
+										{% endfor %}
+									</div>
+								{% endif %}
 							</div>
 						{% endfor %}
 						<div class="clearfix"></div>
@@ -186,6 +214,13 @@ h3 a.title:hover, h4 a.title:hover {
 												<p>{{ story_h.description|raw }}</p>
 											{% endif %}
 										</div>
+										{% if story_h.tags|length > 0 %}	
+											<div class="inline">
+												{% for tag in story_h.tags %}
+													<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> {{ tag.tag_name }}</span> 
+												{% endfor %}
+											</div>
+										{% endif %}
 									</div>
 									<div class="clearfix"></div>
 								{% endfor %}
@@ -206,6 +241,13 @@ h3 a.title:hover, h4 a.title:hover {
 												<p>{{ story_v.description|raw }}</p>
 											{% endif %}
 										</div>
+										{% if story_v.tags|length > 0 %}	
+											<div class="block">
+												{% for tag in story_v.tags %}
+													<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> {{ tag.tag_name }}</span><br />
+												{% endfor %}
+											</div>
+										{% endif %}
 									</div>
 									{% if loop.index % 3 == 0 %}
 										<div class="clearfix"></div>
@@ -236,6 +278,13 @@ h3 a.title:hover, h4 a.title:hover {
 										<p>{{ side_story.description|raw }}</p>
 									{% endif %}
 								</div>
+								{% if side_story.tags|length > 0 %}	
+									<div class="inline">
+										{% for tag in side_story.tags %}
+											<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> {{ tag.tag_name }}</span><br />
+										{% endfor %}
+									</div>
+								{% endif %}
 							</div>
 							{% if loop.index % 4 == 0 %}
 								<div class="clearfix"></div>
