@@ -28,6 +28,7 @@ $(function(){
     loadImageAssetUtilities();
     loadAudioAssetUtilities();
     loadStoryTagAssetUtilities();
+    loadVideoAssetUtilities();
 });
 /***********************************END: Bootstrap Functions***********************************/
 
@@ -482,3 +483,73 @@ function loadAudioAssetUtilities(){
     refreshAudioFunctions();
 } 
 /***********************************END: Audio Tab Functions***********************************/
+
+/***********************************START: Video Tab Functions***********************************/
+function refreshVideoMedia(story_num){
+    statusApp.showPleaseWait();
+    var values = {};
+    values['story_id'] = story_num;
+    $.post('/video/assets', {story_values: values}, function(data){
+        $('[id="edit-video-fragment-'+story_num+'"]').html(data);
+        loadVideoAssetUtilities();
+    }).done(function(){
+        statusApp.hidePleaseWait();
+    });
+}
+
+function loadVideoAssetUtilities(){
+    $('input[name="saveVideoBtn"]').click(function(){
+        addVideo($(this).data('storyid'));
+    });
+    $('input[name="deleteVideoBtn"]').click(function(){
+        removeVideo($(this).data('storyvideoid'), $(this).data('storyid'));
+    });
+}
+
+/**
+ * Saves the story video HTML
+ */
+function addVideo(story_num){
+    statusApp.showPleaseWait();
+    var values = {};
+    values['story_id'] = story_num;
+    values['video_title'] = $('[id="edit-video-fragment-'+story_num+'"] input[name="video_title"]').val();
+    values['video_html'] = $('[id="edit-video-fragment-'+story_num+'"] textarea[name="video_html"]').val();
+    $.post('/storylist/addvideo', {story_values: values}, function(data){
+        statusApp.hidePleaseWait();
+        data = $.parseJSON(data);
+     
+        // report validation errors
+        reportFormErrors(data.errors);
+    
+        if(data.save_success){
+            // if save is success, give user feedback
+            refreshVideoMedia(story_num);
+            popUpMsg("The video has been updated!");
+        }
+    });   
+}
+
+/**
+ * remove video from the video tab
+ */
+function removeVideo(story_video_num, story_num){
+    statusApp.showPleaseWait();
+    var values = {};
+    values['story_video_id'] = story_video_num;
+    values['story_id'] = story_num;
+    $.post('/storylist/removevideo', {story_values: values}, function(data){
+        statusApp.hidePleaseWait();
+        data = $.parseJSON(data);
+     
+        // report validation errors
+        reportFormErrors(data.errors);
+    
+        if(data.save_success){
+            // if delete is success, give user feedback
+            refreshVideoMedia(story_num);
+            popUpMsg("The video HTML has been deleted");
+        }
+    });
+}
+/***********************************END: Video Tab Functions***********************************/

@@ -1,0 +1,42 @@
+<!-- Start Video Block -->
+{% if entry.video %}
+	<div class="row">
+		<div class="col-lg-3">
+			<label for="title">Title</label><br />
+			<input class="form-control" name="video_title" value="{{entry.video.video_title}}" placeholder="Enter your title here" />
+		</div>
+	</div>
+	<div class="clear"><br /></div>
+	<div class="row">
+		<div class="col-lg-12">
+			<label for="description">Embed HTML</label><br />
+			<textarea class="form-control" name="video_html" placeholder="Enter video html here">{{entry.video.video_html}}</textarea>
+		</div>
+		<div class="clear"><br /></div>
+		<div class="pull-right" style="margin-right: 20px;">
+			<input type="button" data-storyvideoid="{{entry.story_video_id}}" data-storyid="{{entry.story_id}}" name="deleteVideoBtn" class="btn btn-danger" value="DELETE VIDEO HTML" />
+		</div>
+		<div class="pull-right" style="margin-right: 20px;">
+			<input type="button" data-storyid="{{entry.story_id}}" name="saveVideoBtn" class="btn btn-info" value="SAVE VIDEO HTML" />
+		</div>
+	</div>
+{% else %}
+	<div class="row">
+		<div class="col-lg-3">
+			<label for="title">Title</label><br />
+			<input class="form-control" name="video_title" value="" placeholder="Enter your title here" />
+		</div>
+	</div>
+	<div class="clear"><br /></div>
+	<div class="row">
+		<div class="col-lg-12">
+			<label for="description">Embed HTML</label><br />
+			<textarea class="form-control" name="video_html" placeholder="Enter video html here"></textarea>
+		</div>
+		<div class="clear"><br /></div>
+		<div class="pull-right" style="margin-right: 20px;">
+			<input type="button" data-storyid="{{entry.story_id}}" name="saveVideoBtn" class="btn btn-info" value="SAVE VIDEO HTML" />
+		</div>
+	</div>
+{% endif %}
+<!-- End Video Block -->

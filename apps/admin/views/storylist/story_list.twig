@@ -39,6 +39,7 @@
 						    <li><a href="#edit-tags-fragment-{{entry.story_id}}"><span>Select Tags</span></a></li>
 						    <li><a href="#edit-images-fragment-{{entry.story_id}}"><span>Edit Images</span></a></li>
 						    <li><a href="#edit-audio-fragment-{{entry.story_id}}"><span>Edit Audio</span></a></li>
+						    <li><a href="#edit-video-fragment-{{entry.story_id}}"><span>Edit Video</span></a></li>
 						</ul>
 		            	<div id="edit-story-fragment-{{entry.story_id}}" class="row">
 		            		{% include "story_fragment.twig" %}
@@ -51,6 +52,9 @@
 						</div>
 						<div id="edit-audio-fragment-{{entry.story_id}}" class="row">
 		            		{% include "audio_fragment.twig" %}
+						</div>
+						<div id="edit-video-fragment-{{entry.story_id}}" class="row">
+		            		{% include "video_fragment.twig" %}
 						</div>
 		          	</div>
 		        </div>

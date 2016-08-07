@@ -9,6 +9,7 @@ use app\models\StoryImage;
 use app\models\StoryTag;
 use app\models\StoryTagList;
 use app\models\StoryAudio;
+use app\models\StoryVideo;
 
 class StorylistController extends Controller
 {
@@ -93,6 +94,9 @@ class StorylistController extends Controller
             $story_audio_model = new StoryAudio; // used for active web forms
             $story_audio_model->setScenario(StoryAudio::SCENARIO_STORY_AUDIO);
 
+            // attaches video assets to each story
+            $story_list = $this->attachVideo($story_list);
+
             // attaches tag assets to each story
             $story_list = $this->attachTags($story_list);
               
@@ -129,6 +133,9 @@ class StorylistController extends Controller
             $story_audio_model = new StoryAudio; // used for active web forms
             $story_audio_model->setScenario(StoryAudio::SCENARIO_STORY_AUDIO);
 
+            // attaches video assets to each story
+            $story_list = $this->attachVideo($story_list);
+
             // attaches tag assets to each story
             $story_list = $this->attachTags($story_list);
 
@@ -145,6 +152,21 @@ class StorylistController extends Controller
                 return $this->render('index.twig');
             }
         }
+    }
+
+    /**
+     * Adds the story video to each story
+     */
+    private function attachVideo($story_list){
+        if(($maxStories = count($story_list)) > 0){
+            for($i = 0; $i < $maxStories; $i++){
+                $story_video = Yii::$app->runAction('video/assets', ['id' => $story_list[$i]['story_id']]);
+                if(count($story_video) > 0){
+                    $story_list[$i]['video'] = $story_video[0];
+                }
+            }
+        }
+        return $story_list;
     }
 
     /**
@@ -383,5 +405,32 @@ class StorylistController extends Controller
                 ->all();
         }
         return $this->renderPartial('tag_fragment.twig', ['entry' => $story_entry]);
+    }
+
+    /**
+     * Adds a video to the story 
+     */
+    public function actionAddvideo() {
+        $story_values = Yii::$app->request->post('story_values');
+        $story_video = StoryVideo::findOne(['story_id' => $story_values['story_id']]);
+        if(!empty($story_video)){
+            $story_video->setScenario(StoryVideo::SCENARIO_STORY_VIDEO);
+            $story_video->attributes = $story_values;
+            echo json_encode(['save_success' => $story_video->save(true, ['video_title','video_html']), 'errors' => $story_video->getErrors()]);
+        } else {
+            $model = new StoryVideo;
+            $model->setScenario(StoryVideo::SCENARIO_STORY_VIDEO);
+            $model->attributes = $story_values;
+            echo json_encode(['save_success' => $model->save(), 'errors' => $model->getErrors()]);
+        }
+    }
+
+    /**
+     * Deletes a video from a story in the database and echos the result
+     */
+    public function actionRemovevideo() {
+        $story_values = Yii::$app->request->post('story_values');
+        $model = StoryVideo::findOne(['story_id' => $story_values['story_id']]);
+        echo json_encode(['save_success' => $model->delete(), 'errors' => $model->getErrors()]);
     }
 }
