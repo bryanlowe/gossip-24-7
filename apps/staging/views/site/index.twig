@@ -85,8 +85,31 @@ h3 a.title:hover, h4 a.title:hover {
 			{% if main_story.tags|length > 0 %}	
 				<div class="inline">
 					{% for tag in main_story.tags %}
-						<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> {{ tag.tag_name }}</span> 
+						<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#tag-id-{{ tag.story_tag_id }}">{{ tag.tag_name }}</a></span>
 					{% endfor %}
+				</div>
+				<div class="hide">
+					{% for tag in main_story.tags %}
+						<div id="tag-id-{{ tag.story_tag_id }}">{{ tag.description }}</div> 
+					{% endfor %}
+				</div>
+			{% endif %}
+			{% if main_story.audio|length > 0 %}
+				{% for audio in main_story.audio %}
+					<div class="block">
+						<span style="color: #000;"><i class="fa fa-volume-up fa-fw" style="color: #cf0000;"></i> <a data-audiocontainer="#audio-id-{{ audio.story_audio_id }}">Listen</a></span>
+					</div>
+					<div id="audio-id-{{ audio.story_audio_id }}" style="display: none;">
+						<p class="text-center"><audio controls><source src="http://media.gossip247.com/story/{{ audio.story_id }}/audio/{{ audio.audio_name }}" type="audio/mpeg">Your browser does not support the audio element.</audio></p> 
+					</div>
+				{% endfor %}
+			{% endif %}	
+			{% if main_story.video %}
+				<div class="block">
+					<span style="color: #000;"><i class="fa fa-video-camera fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#video-id-{{ main_story.video.story_video_id }}">Watch</a></span>
+				</div>
+				<div class="hide">
+					<div id="video-id-{{ main_story.video.story_video_id }}">{{ main_story.video.video_html|raw }}</div> 
 				</div>
 			{% endif %}	
 			<div class="clearfix"></div>
@@ -122,8 +145,31 @@ h3 a.title:hover, h4 a.title:hover {
 											{% if story_h.tags|length > 0 %}	
 												<div class="inline">
 													{% for tag in story_h.tags %}
-														<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> {{ tag.tag_name }}</span> 
+														<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#tag-id-{{ tag.story_tag_id }}">{{ tag.tag_name }}</a></span>
 													{% endfor %}
+												</div>
+												<div class="hide">
+													{% for tag in story_h.tags %}
+														<div id="tag-id-{{ tag.story_tag_id }}">{{ tag.description }}</div> 
+													{% endfor %}
+												</div>
+											{% endif %}
+											{% if story_h.audio|length > 0 %}
+												{% for audio in story_h.audio %}
+													<div class="block">
+														<span style="color: #000;"><i class="fa fa-volume-up fa-fw" style="color: #cf0000;"></i> <a data-audiocontainer="#audio-id-{{ audio.story_audio_id }}">Listen</a></span>
+													</div>
+													<div id="audio-id-{{ audio.story_audio_id }}" style="display: none;">
+														<p class="text-center"><audio controls><source src="http://media.gossip247.com/story/{{ audio.story_id }}/audio/{{ audio.audio_name }}" type="audio/mpeg">Your browser does not support the audio element.</audio></p> 
+													</div>
+												{% endfor %}
+											{% endif %}	
+											{% if story_h.video %}
+												<div class="block">
+													<span style="color: #000;"><i class="fa fa-video-camera fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#video-id-{{ story_h.video.story_video_id }}">Watch</a></span>
+												</div>
+												<div class="hide">
+													<div id="video-id-{{ story_h.video.story_video_id }}">{{ story_h.video.video_html|raw }}</div> 
 												</div>
 											{% endif %}
 										</div>
@@ -149,8 +195,31 @@ h3 a.title:hover, h4 a.title:hover {
 											{% if story_v.tags|length > 0 %}	
 												<div class="block">
 													{% for tag in story_v.tags %}
-														<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> {{ tag.tag_name }}</span><br />
+														<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#tag-id-{{ tag.story_tag_id }}">{{ tag.tag_name }}</a></span><br />
 													{% endfor %}
+												</div>
+												<div class="hide">
+													{% for tag in story_v.tags %}
+														<div id="tag-id-{{ tag.story_tag_id }}">{{ tag.description }}</div> 
+													{% endfor %}
+												</div>
+											{% endif %}
+											{% if story_v.audio|length > 0 %}
+												{% for audio in story_v.audio %}
+													<div class="block">
+														<span style="color: #000;"><i class="fa fa-volume-up fa-fw" style="color: #cf0000;"></i> <a data-audiocontainer="#audio-id-{{ audio.story_audio_id }}">Listen</a></span>
+													</div>
+													<div id="audio-id-{{ audio.story_audio_id }}" style="display: none;">
+														<p class="text-center"><audio controls><source src="http://media.gossip247.com/story/{{ audio.story_id }}/audio/{{ audio.audio_name }}" type="audio/mpeg">Your browser does not support the audio element.</audio></p>
+													</div>
+												{% endfor %}
+											{% endif %}	
+											{% if story_v.video %}
+												<div class="block">
+													<span style="color: #000;"><i class="fa fa-video-camera fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#video-id-{{ story_v.video.story_video_id }}" style="font-weight: normal; color: #000;">Watch</a></span>
+												</div>
+												<div class="hide">
+													<div id="video-id-{{ story_v.video.story_video_id }}">{{ story_v.video.video_html|raw }}</div> 
 												</div>
 											{% endif %}
 										</div>
@@ -184,8 +253,31 @@ h3 a.title:hover, h4 a.title:hover {
 								{% if side_story.tags|length > 0 %}	
 									<div class="inline">
 										{% for tag in side_story.tags %}
-											<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> {{ tag.tag_name }}</span><br />
+											<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#tag-id-{{ tag.story_tag_id }}">{{ tag.tag_name }}</a></span><br />
 										{% endfor %}
+									</div>
+									<div class="hide">
+										{% for tag in side_story.tags %}
+											<div id="tag-id-{{ tag.story_tag_id }}">{{ tag.description }}</div> 
+										{% endfor %}
+									</div>
+								{% endif %}
+								{% if side_story.audio|length > 0 %}
+									{% for audio in side_story.audio %}
+										<div class="block">
+											<span style="color: #000;"><i class="fa fa-volume-up fa-fw" style="color: #cf0000;"></i> <a data-audiocontainer="#audio-id-{{ audio.story_audio_id }}">Listen</a></span>
+										</div>
+										<div id="audio-id-{{ audio.story_audio_id }}" style="display: none;">
+											<p class="text-center"><audio controls><source src="http://media.gossip247.com/story/{{ audio.story_id }}/audio/{{ audio.audio_name }}" type="audio/mpeg">Your browser does not support the audio element.</audio></p>
+										</div>
+									{% endfor %}
+								{% endif %}	
+								{% if side_story.video %}
+									<div class="block">
+										<span style="color: #000;"><i class="fa fa-video-camera fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#video-id-{{ side_story.video.story_video_id }}">Watch</a></span>
+									</div>
+									<div class="hide">
+										<div id="video-id-{{ side_story.video.story_video_id }}">{{ side_story.video.video_html|raw }}</div> 
 									</div>
 								{% endif %}
 							</div>
@@ -217,8 +309,31 @@ h3 a.title:hover, h4 a.title:hover {
 										{% if story_h.tags|length > 0 %}	
 											<div class="inline">
 												{% for tag in story_h.tags %}
-													<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> {{ tag.tag_name }}</span> 
+													<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#tag-id-{{ tag.story_tag_id }}">{{ tag.tag_name }}</a></span>
 												{% endfor %}
+											</div>
+											<div class="hide">
+												{% for tag in story_h.tags %}
+													<div id="tag-id-{{ tag.story_tag_id }}">{{ tag.description }}</div> 
+												{% endfor %}
+											</div>
+										{% endif %}
+										{% if story_h.audio|length > 0 %}
+											{% for audio in story_h.audio %}
+												<div class="block">
+													<span style="color: #000;"><i class="fa fa-volume-up fa-fw" style="color: #cf0000;"></i> <a data-audiocontainer="#audio-id-{{ audio.story_audio_id }}">Listen</a></span>
+												</div>
+												<div id="audio-id-{{ audio.story_audio_id }}" style="display: none;">
+													<p class="text-center"><audio controls><source src="http://media.gossip247.com/story/{{ audio.story_id }}/audio/{{ audio.audio_name }}" type="audio/mpeg">Your browser does not support the audio element.</audio></p>
+												</div>
+											{% endfor %}
+										{% endif %}	
+										{% if story_h.video %}
+											<div class="block">
+												<span style="color: #000;"><i class="fa fa-video-camera fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#video-id-{{ story_h.video.story_video_id }}">Watch</a></span>
+											</div>
+											<div class="hide">
+												<div id="video-id-{{ story_h.video.story_video_id }}">{{ story_h.video.video_html|raw }}</div> 
 											</div>
 										{% endif %}
 									</div>
@@ -244,8 +359,31 @@ h3 a.title:hover, h4 a.title:hover {
 										{% if story_v.tags|length > 0 %}	
 											<div class="block">
 												{% for tag in story_v.tags %}
-													<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> {{ tag.tag_name }}</span><br />
+													<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#tag-id-{{ tag.story_tag_id }}">{{ tag.tag_name }}</a></span><br />
 												{% endfor %}
+											</div>
+											<div class="hide">
+												{% for tag in story_v.tags %}
+													<div id="tag-id-{{ tag.story_tag_id }}">{{ tag.description }}</div> 
+												{% endfor %}
+											</div>
+										{% endif %}
+										{% if story_v.audio|length > 0 %}
+											{% for audio in story_v.audio %}
+												<div class="block">
+													<span style="color: #000;"><i class="fa fa-volume-up fa-fw" style="color: #cf0000;"></i> <a data-audiocontainer="#audio-id-{{ audio.story_audio_id }}">Listen</a></span>
+												</div>
+												<div id="audio-id-{{ audio.story_audio_id }}" style="display: none;">
+													<p class="text-center"><audio controls><source src="http://media.gossip247.com/story/{{ audio.story_id }}/audio/{{ audio.audio_name }}" type="audio/mpeg">Your browser does not support the audio element.</audio></p>
+												</div>
+											{% endfor %}
+										{% endif %}	
+										{% if story_v.video %}
+											<div class="block">
+												<span style="color: #000;"><i class="fa fa-video-camera fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#video-id-{{ story_v.video.story_video_id }}">Watch</a></span>
+											</div>
+											<div class="hide">
+												<div id="video-id-{{ story_v.video.story_video_id }}">{{ story_v.video.video_html|raw }}</div> 
 											</div>
 										{% endif %}
 									</div>
@@ -281,8 +419,31 @@ h3 a.title:hover, h4 a.title:hover {
 								{% if side_story.tags|length > 0 %}	
 									<div class="inline">
 										{% for tag in side_story.tags %}
-											<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> {{ tag.tag_name }}</span><br />
+											<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#tag-id-{{ tag.story_tag_id }}">{{ tag.tag_name }}</a></span><br />
 										{% endfor %}
+									</div>
+									<div class="hide">
+										{% for tag in side_story.tags %}
+											<div id="tag-id-{{ tag.story_tag_id }}">{{ tag.description }}</div> 
+										{% endfor %}
+									</div>
+								{% endif %}
+								{% if side_story.audio|length > 0 %}
+									{% for audio in side_story.audio %}
+										<div class="block">
+											<span style="color: #000;"><i class="fa fa-volume-up fa-fw" style="color: #cf0000;"></i> <a data-audiocontainer="#audio-id-{{ audio.story_audio_id }}">Listen</a></span>
+										</div>
+										<div id="audio-id-{{ audio.story_audio_id }}" style="display: none;">
+											<p class="text-center"><audio controls><source src="http://media.gossip247.com/story/{{ audio.story_id }}/audio/{{ audio.audio_name }}" type="audio/mpeg">Your browser does not support the audio element.</audio></p>
+										</div>
+									{% endfor %}
+								{% endif %}	
+								{% if side_story.video %}
+									<div class="block">
+										<span style="color: #000;"><i class="fa fa-video-camera fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#video-id-{{ side_story.video.story_video_id }}">Watch</a></span>
+									</div>
+									<div class="hide">
+										<div id="video-id-{{ side_story.video.story_video_id }}">{{ side_story.video.video_html|raw }}</div> 
 									</div>
 								{% endif %}
 							</div>

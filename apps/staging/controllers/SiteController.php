@@ -67,7 +67,13 @@ class SiteController extends Controller
             ->asArray()
             ->limit(1)
             ->one();
-        $main_story = $this->attachTags($main_story);
+        $main_story = $this->attachTags($main_story, true);
+
+        // attaches audio assets to main story
+        $main_story = $this->attachAudio($main_story, true);
+
+        // attaches video assets to main story
+        $main_story = $this->attachVideo($main_story, true);
 
         // create story list
         $story_list = Story::find()
@@ -80,6 +86,13 @@ class SiteController extends Controller
             ->asArray()
             ->all();
         $story_list = $this->attachTags($story_list);
+
+        // attaches audio assets to each story
+        $story_list = $this->attachAudio($story_list);
+
+        // attaches video assets to each story
+        $story_list = $this->attachVideo($story_list);
+
         $story_list = $this->formatStoryList($story_list);
         if(count($story_list) > 0 || count($main_story) > 0){
             return $this->render('index.twig', ['story_list' => $story_list, 'main_story' => $main_story]);
@@ -91,26 +104,84 @@ class SiteController extends Controller
     /**
      * Adds the story tags to each story
      */
-    private function attachTags($story_list){
-        if(($maxStories = count($story_list)) > 0){
-            for($i = 0; $i < $maxStories; $i++){
-                $story_tag_id_list = StoryTagList::findAll(['story_id' => $story_list[$i]['story_id']]);
-                if(($maxStoryTags = count($story_tag_id_list)) > 0){
-                    /**************COLLECT STORY TAGS ASSOCIATED WITH THIS STORY - START***************/
-                    $story_tag_id_set = array();
-                    for($j = 0; $j < $maxStoryTags; $j++){
-                        $story_tag_id_set[] = $story_tag_id_list[$j]['story_tag_id'];
+    private function attachTags($story_list, $main_story = false){
+        if(!$main_story){
+            if(($maxStories = count($story_list)) > 0){
+                for($i = 0; $i < $maxStories; $i++){
+                    $story_tag_id_list = StoryTagList::findAll(['story_id' => $story_list[$i]['story_id']]);
+                    if(($maxStoryTags = count($story_tag_id_list)) > 0){
+                        /**************COLLECT STORY TAGS ASSOCIATED WITH THIS STORY - START***************/
+                        $story_tag_id_set = array();
+                        for($j = 0; $j < $maxStoryTags; $j++){
+                            $story_tag_id_set[] = $story_tag_id_list[$j]['story_tag_id'];
+                        }
+                        $story_list[$i]['tags'] = StoryTag::find()
+                            ->select('*')
+                            ->where(['in', 'story_tag_id', $story_tag_id_set])
+                            ->orderBy('tag_name ASC')
+                            ->asArray()
+                            ->all();
+                        /**************COLLECT STORY TAGS ASSOCIATED WITH THIS STORY - END***************/
+                    } else {
+                        $story_list[$i]['tags'] = array();    
                     }
-                    $story_list[$i]['tags'] = StoryTag::find()
-                        ->select('*')
-                        ->where(['in', 'story_tag_id', $story_tag_id_set])
-                        ->orderBy('tag_name ASC')
-                        ->asArray()
-                        ->all();
-                    /**************COLLECT STORY TAGS ASSOCIATED WITH THIS STORY - END***************/
-                } else {
-                    $story_list[$i]['tags'] = array();    
                 }
+            }
+        } else {
+            $story_tag_id_list = StoryTagList::findAll(['story_id' => $story_list['story_id']]);
+            if(($maxStoryTags = count($story_tag_id_list)) > 0){
+                /**************COLLECT STORY TAGS ASSOCIATED WITH THIS STORY - START***************/
+                $story_tag_id_set = array();
+                for($j = 0; $j < $maxStoryTags; $j++){
+                    $story_tag_id_set[] = $story_tag_id_list[$j]['story_tag_id'];
+                }
+                $story_list['tags'] = StoryTag::find()
+                    ->select('*')
+                    ->where(['in', 'story_tag_id', $story_tag_id_set])
+                    ->orderBy('tag_name ASC')
+                    ->asArray()
+                    ->all();
+                /**************COLLECT STORY TAGS ASSOCIATED WITH THIS STORY - END***************/
+            } else {
+                $story_list['tags'] = array();    
+            }
+        }
+        return $story_list;
+    }
+
+    /**
+     * Adds the story audio to each story
+     */
+    private function attachAudio($story_list, $main_story = false){
+        if(!$main_story){
+            if(($maxStories = count($story_list)) > 0){
+                for($i = 0; $i < $maxStories; $i++){
+                    $story_list[$i]['audio'] = Yii::$app->runAction('audio/assets', ['id' => $story_list[$i]['story_id']]);
+                }
+            }
+        } else {
+            $story_list['audio'] = Yii::$app->runAction('audio/assets', ['id' => $story_list['story_id']]);
+        }
+        return $story_list;
+    }
+
+    /**
+     * Adds the story video to each story
+     */
+    private function attachVideo($story_list, $main_story = false){
+        if(!$main_story){
+            if(($maxStories = count($story_list)) > 0){
+                for($i = 0; $i < $maxStories; $i++){
+                    $story_video = Yii::$app->runAction('video/assets', ['id' => $story_list[$i]['story_id']]);
+                    if(count($story_video) > 0){
+                        $story_list[$i]['video'] = $story_video[0];
+                    }
+                }
+            }
+        } else {
+            $story_video = Yii::$app->runAction('video/assets', ['id' => $story_list['story_id']]);
+            if(count($story_video) > 0){
+                $story_list['video'] = $story_video[0];
             }
         }
         return $story_list;

@@ -22,7 +22,8 @@ class AppAsset extends AssetBundle
         '/css/bootstrap.css',
         '/css/popuo-box.css',
         '/css/font-awesome.min.css',
-        '/css/style.css'
+        '/css/style.css',
+        '//cdn.rawgit.com/noelboss/featherlight/1.5.0/release/featherlight.min.css'
     ];
     public $js = [
         '/js/jquery.min.js',
@@ -30,7 +31,9 @@ class AppAsset extends AssetBundle
         '/js/jquery.flexslider.js',
         '/js/jquery.leanModal.min.js',
         '/js/jquery.magnific-popup.js',
-        '/js/responsiveslides.min.js'
+        '/js/responsiveslides.min.js',
+        '//cdn.rawgit.com/noelboss/featherlight/1.5.0/release/featherlight.min.js',
+        '/js/scripts.js'
     ];
     public $depends = [
         'yii\web\YiiAsset'

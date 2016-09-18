@@ -1,0 +1,41 @@
+{{ set(this, 'title', 'Gossip 24/7 Admin - Audio List') }}
+{{ this.registerJsFile('/js/jquery.min.js') }}
+{{ this.registerJsFile('/js/jquery.tablesorter.min.js') }}
+{{ this.registerJsFile('/js/page-scripts/audio-list-scripts.js') }}
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Audio List</h3>
+			</div>
+			<div class="panel-body">
+				{% if media_assets %}
+					<div class="table-responsive">
+						<table id="audioListTbl" class="table table-bordered table-hover table-striped tablesorter">
+							<thead>
+				            	<tr>
+				                    <th class="header">Audio Name <i class="fa fa-sort"></i></th>
+				                    <th class="header">Story Title <i class="fa fa-sort"></i></th>
+				                    <th class="header">File Location <i class="fa fa-sort"></i></th>
+				                    <th class="header"></th>
+				              	</tr>
+				          	</thead>
+				          	<tbody>
+				          		{% for audio in media_assets %}
+					          		<tr>
+					          			<td>{{ audio.audio_name }}</td>
+					          			<td>{{ audio.title }}</td>
+					          			<td>http://media.gossip247.com/story/{{ audio.story_id }}/audio/{{ audio.audio_name }}</td>
+					          			<td><a data-audiosrc="http://media.gossip247.com/story/{{ audio.story_id }}/audio/{{ audio.audio_name }}" class="btn btn-info">LISTEN</a></td>
+					          		</tr>
+				          		{% endfor %}
+							</tbody>
+				 	 	</table>
+					</div>
+				{% else %}
+					<p align="center"><strong>There are no audio files to list.</strong></p>
+				{% endif%}
+			</div>
+		</div>
+	</div>
+</div>

@@ -79,10 +79,22 @@ class CelebritytagsController extends Controller
         $model = new StoryTag;
         $model->setScenario(StoryTag::SCENARIO_STORY_TAG);
         $model->attributes = $story_values;
-        if(isset($story_values['story_tag_id'])){
-            echo json_encode(['save_success' => $model->saveStoryTag(), 'errors' => $model->getErrors()]);
+
+        // maintain uniqueness between tags
+        $tag_list = StoryTag::find()
+            ->select('story_tag_id, tag_name')
+            ->where('UPPER(tag_name) = "' . strtoupper($story_values['tag_name']) . '"')
+            ->asArray()
+            ->all();
+
+        if(count($tag_list) == 0){
+            if(isset($story_values['story_tag_id'])){
+                echo json_encode(['save_success' => $model->saveStoryTag(), 'errors' => $model->getErrors()]);
+            } else {
+                echo json_encode(['save_success' => $model->save(), 'errors' => $model->getErrors()]);
+            }
         } else {
-            echo json_encode(['save_success' => $model->save(), 'errors' => $model->getErrors()]);
+            echo json_encode(['save_success' => false, 'errors' => ['tag_name' => ['Tag \'' . $story_values['tag_name'] . '\' already exists']]]);
         }
     }
 

@@ -34,27 +34,6 @@ class AudioController extends Controller implements MediaController
     }
 
     /**
-     * Loads the audio assets and merges them with stories, then renders the result in a table
-     */
-    public function actionIndex(){
-        // create audio list
-        $audio_list = StoryAudio::find()
-            ->select('story_audio.*, title')
-            ->innerJoinWith('story')
-            ->orderBy('story_audio.audio_name ASC')
-            ->asArray()
-            ->all();
-        $maxAudioFiles = count($audio_list);
-
-        // apply media assets to the view
-        if($maxAudioFiles > 0){
-            echo $this->render('index.twig', ['media_assets' => $audio_list]);
-        } else {
-            echo $this->render('index.twig');
-        }
-    }
-
-    /**
      * load story assets from the database and echos the result or returns the result as an array
      */
     public function actionAssets($id = "") {

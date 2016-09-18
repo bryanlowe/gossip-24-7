@@ -203,6 +203,7 @@ function refreshImageMedia(story_num){
     values['story_id'] = story_num;
     $.post('/image/assets', {story_values: values}, function(data){
         $('[data-storyid="'+story_num+'"].image_assets').html(data);
+        $('#image-upload-form-'+story_num+' #storyimage-imagefile').val('');
         loadImageAssetUtilities();
     }).done(function(){
         statusApp.hidePleaseWait();
