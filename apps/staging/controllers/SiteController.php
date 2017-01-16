@@ -224,7 +224,7 @@ class SiteController extends Controller
         }
         $storyIndex = 0;
         for($i = 0; $i < $maxFeatured_v; $i++){
-            if($i % 3 == 0){
+            if($i % 2 == 0){
                 $storyIndex++;
             }
             if(empty($story_list['featured_list'][$storyIndex]['featured_list_v'])){

@@ -38,7 +38,7 @@ class VideoController extends Controller implements MediaController
     public function actionAssets($id = "") {
         $model = new StoryVideo;
         $model->setScenario(StoryVideo::SCENARIO_STORY_VIDEO);
-        if(Yii::$app->request->isAjax){
+        if(Yii::$app->request->isAjax && !is_numeric($id)){
             $story_values = Yii::$app->request->post('story_values');
             // create asset list
             $video = StoryVideo::findOne(['story_id' => $story_values['story_id']]);

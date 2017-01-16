@@ -63,7 +63,10 @@ class ImageController extends Controller implements MediaController
         $model = StoryImage::findOne($story_values['story_image_id']);
         $result = $model->delete();
         $errors = $model->getErrors();
-        unlink('/home/gossip24/public_html/uploads/story/' . $model->story_id . '/images/'.$model->image_name);
+        $file = '/home/gossip24/public_html/uploads/story/' . $model->story_id . '/images/'.$model->image_name;
+        if(file_exists($file)){
+            unlink($file);
+        }
         echo json_encode(['save_success' => $result, 'errors' => $errors]);
     }
 

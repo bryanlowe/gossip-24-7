@@ -45,6 +45,10 @@ function refreshStoryList(){
         $('#story_list').html(data);
     }).done(function(){
         loadListUtilities();
+        loadImageAssetUtilities();
+        loadAudioAssetUtilities();
+        loadStoryTagAssetUtilities();
+        loadVideoAssetUtilities();
         statusApp.hidePleaseWait();
     });
 }

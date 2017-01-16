@@ -21,17 +21,13 @@ h3 a.title:hover, h4 a.title:hover {
 	border-top: 1px solid #e4e4e4;
 	border-bottom: 1px solid #e4e4e4;
 }
-.conference-rslide{
-	width: 100%;
-}
 .world-news-grid {
-	width: 30%;
+	width: 47%;
 }
 .world-news-grid a {
 	text-transform: none;
 }
 .world-news-grid img {
-	width: 50%;
 	float: left;
 	padding-right: 5px;
 	padding-bottom: 5px;
@@ -46,14 +42,11 @@ h3 a.title:hover, h4 a.title:hover {
 .posts { 
 	padding: 0;
 }
-.conference-rslide{
-	width: 100%;
-}
-.conference-rslide img {
-	width: 796px;
-}
 .breaking-news-title {
 	width: 100%;
+}
+.conference-slider img {
+	margin: auto;
 }
 </style>
 <div class="news-paper">
@@ -74,7 +67,7 @@ h3 a.title:hover, h4 a.title:hover {
 				<div class="conference-slider">
 					{% for image in main_story.storyImage %}
 						{% if image.order == 0 %}
-							<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 888px;" alt="">
+							<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" class="img-responsive" alt="">
 						{% endif %}
 					{% endfor %}
 					{% if main_story.show_desc %}
@@ -119,7 +112,7 @@ h3 a.title:hover, h4 a.title:hover {
 	{% if story_list %}
 		<div class="col-lg-12" style="padding: 0;">
 			{% if story_list.featured_list|length > 0 and story_list.side_list|length > 0 %}
-				<div class="col-md-9" style="padding-left: 0; padding-right: 0;">
+				<div class="col-md-8" style="padding-left: 0; padding-right: 0;">
 					<div class="world-news">
 						{% for story in story_list.featured_list %}
 							<div class="world-news-grids">
@@ -134,7 +127,7 @@ h3 a.title:hover, h4 a.title:hover {
 											{% if story_h.story_size != 5 %}
 												{% for image in story_h.storyImage %}
 													{% if loop.index < 3 %}
-														<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 250px;" alt="">
+														<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" class="img-responsive" alt="">
 													{% endif %}
 												{% endfor %}
 											{% endif %}
@@ -185,7 +178,7 @@ h3 a.title:hover, h4 a.title:hover {
 											<div>
 												{% for image in story_v.storyImage %}
 													{% if image.order == 0 %}
-														<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 150px;" alt="">
+														<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" class="img-responsive" alt="">
 													{% endif %}
 												{% endfor %}
 												{% if story_v.show_desc %}
@@ -223,7 +216,7 @@ h3 a.title:hover, h4 a.title:hover {
 												</div>
 											{% endif %}
 										</div>
-										{% if loop.index % 3 == 0 %}
+										{% if loop.index % 2 == 0 %}
 											<div class="clearfix"></div>
 										{% endif %}
 									{% endfor %}
@@ -234,7 +227,7 @@ h3 a.title:hover, h4 a.title:hover {
 					<div class="clearfix"></div>
 				</div>
 
-				<div class="col-md-3" style="padding: 0; padding-left: 5px;">
+				<div class="col-md-4" style="padding: 0; padding-left: 5px;">
 					<div class="world-news-grids">
 						{% for side_story in story_list.side_list %}
 							<!-- starting side story ROW {{loop.index}} -->
@@ -243,7 +236,7 @@ h3 a.title:hover, h4 a.title:hover {
 								<div>
 									{% for image in side_story.storyImage %}
 										{% if image.order == 0 %}
-											<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 150px;" alt="">
+											<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" class="img-responsive" alt="">
 										{% endif %}
 									{% endfor %}
 									{% if side_story.show_desc %}
@@ -299,7 +292,7 @@ h3 a.title:hover, h4 a.title:hover {
 										<div>
 											{% for image in story_h.storyImage %}
 												{% if loop.index < 3 %}
-													<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 250px;" alt="">
+													<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" class="img-responsive" alt="">
 												{% endif %}
 											{% endfor %}
 											{% if story_h.show_desc %}
@@ -349,7 +342,7 @@ h3 a.title:hover, h4 a.title:hover {
 										<div>
 											{% for image in story_v.storyImage %}
 												{% if image.order == 0 %}
-													<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 150px;" alt="">
+													<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" class="img-responsive" alt="">
 												{% endif %}
 											{% endfor %}
 											{% if story_v.show_desc %}
@@ -409,7 +402,7 @@ h3 a.title:hover, h4 a.title:hover {
 								<div>
 									{% for image in side_story.storyImage %}
 										{% if image.order == 0 %}
-											<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" style="max-width: 150px;" alt="">
+											<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" class="img-responsive" alt="">
 										{% endif %}
 									{% endfor %}
 									{% if side_story.show_desc %}
@@ -459,7 +452,7 @@ h3 a.title:hover, h4 a.title:hover {
 	{% endif %}
 	<div class="text-center" style="margin-top: 25px;">
 		<div class="copyright text-center">
-			<p>Gossip 24/7 &copy; 2016 All rights reserved</p>
+			<p>Gossip 24/7 &copy; 2017 All rights reserved</p>
 		</div>
 	</div>
 </div>
