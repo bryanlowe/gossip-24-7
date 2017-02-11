@@ -410,3 +410,7 @@ label[for="priority"] {
 a[data-imagesrc] {
     color: #000;
 }
+
+#maintenance-bar {
+    padding: 8px;
+}

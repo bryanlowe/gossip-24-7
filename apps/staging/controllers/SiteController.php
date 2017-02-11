@@ -6,6 +6,7 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use app\models\LoginForm;
+use app\models\SiteConfig;
 use app\models\Story;
 use app\models\StoryPriority;
 use app\models\StoryImage;
@@ -59,46 +60,61 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        // Find main story, if there is one
-        $main_story = Story::find()
-            ->select('story.*')
-            ->where(['story_size' => 1, 'visible' => 1])
-            ->joinWith('storyImage')
-            ->asArray()
-            ->limit(1)
-            ->one();
-        $main_story = $this->attachTags($main_story, true);
+        if(!$this->siteDown()){
+            // Find main story, if there is one
+            $main_story = Story::find()
+                ->select('story.*')
+                ->where(['story_size' => 1, 'visible' => 1])
+                ->joinWith('storyImage')
+                ->asArray()
+                ->limit(1)
+                ->one();
+            $main_story = $this->attachTags($main_story, true);
 
-        // attaches audio assets to main story
-        $main_story = $this->attachAudio($main_story, true);
+            // attaches audio assets to main story
+            $main_story = $this->attachAudio($main_story, true);
 
-        // attaches video assets to main story
-        $main_story = $this->attachVideo($main_story, true);
+            // attaches video assets to main story
+            $main_story = $this->attachVideo($main_story, true);
 
-        // create story list
-        $story_list = Story::find()
-            ->select('story.*')
-            ->innerJoinWith('storyPriority')
-            ->joinWith('storyImage')
-            ->where('story_size <> 1')
-            ->andWhere(['visible' => 1])
-            ->orderBy('priority ASC')
-            ->asArray()
-            ->all();
-        $story_list = $this->attachTags($story_list);
+            // create story list
+            $story_list = Story::find()
+                ->select('story.*')
+                ->innerJoinWith('storyPriority')
+                ->joinWith('storyImage')
+                ->where('story_size <> 1')
+                ->andWhere(['visible' => 1])
+                ->orderBy('priority ASC')
+                ->asArray()
+                ->all();
+            $story_list = $this->attachTags($story_list);
 
-        // attaches audio assets to each story
-        $story_list = $this->attachAudio($story_list);
+            // attaches audio assets to each story
+            $story_list = $this->attachAudio($story_list);
 
-        // attaches video assets to each story
-        $story_list = $this->attachVideo($story_list);
+            // attaches video assets to each story
+            $story_list = $this->attachVideo($story_list);
 
-        $story_list = $this->formatStoryList($story_list);
-        if(count($story_list) > 0 || count($main_story) > 0){
-            return $this->render('index.twig', ['story_list' => $story_list, 'main_story' => $main_story]);
+            $story_list = $this->formatStoryList($story_list);
+            if(count($story_list) > 0 || count($main_story) > 0){
+                return $this->render('index.twig', ['story_list' => $story_list, 'main_story' => $main_story]);
+            } else {
+                return $this->render('index.twig');
+            }
         } else {
-            return $this->render('index.twig');
+            return $this->render('/sitedown/index.twig');
         }
+    }
+
+    /**
+     * Checks if the site is down. If so, show maintenance page and return true. Return false otherwise
+     */
+    private function siteDown(){
+        $siteStatus = SiteConfig::findOne(['site_config_id' => 2]);
+        if($siteStatus->maintenance_mode){
+            return true;
+        }
+        return false;
     }
 
     /**

@@ -18,6 +18,21 @@
         </div>
         <!-- /.navbar-header -->
 
+        <div id="maintenance-bar" class="pull-right">
+            <div class="form-inline">
+                <label for="site_mode">Maintenance Page Site:</label>
+                <select name="site_mode" class="form-control">
+                    <option value="0">Please select a site mode</option>
+                    <option value="3">Production</option>
+                    <option value="2">Staging</option>
+                </select>
+                <div class="btn-group">
+                    <button class="btn btn-success" name="maintenance-off" disabled>OFF</button>
+                    <button class="btn btn-danger" name="maintenance-on" disabled>ON</button>
+                </div>
+            </div>
+        </div>
+
         <div role="navigation" class="navbar-default sidebar">
             <div class="sidebar-nav navbar-collapse">
                 <ul id="side-menu" class="nav in">
@@ -53,6 +68,7 @@
     </div>
     <div class="modal col-lg-4" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false"><div class="modal-header"><h1>Processing...</h1></div><div class="modal-body"><div class="progress progress-striped active"><div class="progress-bar" style="width: 100%;"></div></div></div></div>
 {{ this.endBody() }}
+{{ this.registerJsFile('/js/page-scripts/site-config-scripts.js') }}
 </body>
 </html>
 {{ this.endPage() }}
