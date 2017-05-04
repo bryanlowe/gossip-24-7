@@ -1,0 +1,8 @@
+<span style="color: #000;">
+	<a data-featherlight="#video-id-{{ video.story_video_id }}" style="text-decoration: none; cursor: pointer;">
+		<i class="fa fa-video-camera fa-fw" style="color: #cf0000;"></i> Watch
+	</a>
+</span>
+<span class="hide">
+	<div id="video-id-{{ video.story_video_id }}">{{ video.video_html|raw }}</div> 
+</span>

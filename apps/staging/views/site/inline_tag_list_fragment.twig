@@ -1,0 +1,22 @@
+<ul class="list-inline">
+	{% if story.tags|length > 0 %}	
+		{% for tag in story.tags %}
+			<li>
+				{% include "celebrity_tag_fragment.twig" %}
+			</li>
+		{% endfor %}
+	{% endif %}
+	{% if story.audio|length > 0 %}
+		{% for audio in story.audio %}
+			<li>
+				{% include "audio_tag_fragment.twig" %}
+			</li>
+		{% endfor %}
+	{% endif %}	
+	{% if story.video %}
+		{% set video = story.video %}
+		<li>
+			{% include "video_tag_fragment.twig" %}
+		</li>
+	{% endif %}
+</ul>

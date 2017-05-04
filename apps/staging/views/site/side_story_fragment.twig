@@ -1,0 +1,21 @@
+{% if story.storyImage|length > 0 %}
+	<div class="col-md-6 col-sm-12">
+		<h4><a href="{{ story.link }}" target="_blank" class="title">{{ story.title|raw }}</a></h4>
+	</div>
+	<div class="col-md-6 col-sm-12">
+		{% for image in story.storyImage %}
+			{% if image.order == 0 %}
+				<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" class="img-responsive" alt="">
+			{% endif %}
+		{% endfor %}
+	</div>
+{% else %}
+	<div class="col-sm-12">
+		<h4><a href="{{ story.link }}" target="_blank" class="title">{{ story.title|raw }}</a></h4>
+	</div>
+{% endif %}
+{% if story.tags|length > 0 or story.audio|length > 0 or story.video %}
+	<div class="col-md-12">
+		{% include "inline_tag_list_fragment.twig" %}
+	</div>
+{% endif %}

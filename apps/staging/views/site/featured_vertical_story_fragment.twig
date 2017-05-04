@@ -1,0 +1,14 @@
+<div class="world-news-grid">
+	<h4><a href="{{ story.link }}" target="_blank" class="title">{{ story.title|raw }}</a></h4>
+	<div>
+		{% for image in story.storyImage %}
+			{% if image.order == 0 %}
+				<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" class="img-responsive" alt="">
+			{% endif %}
+		{% endfor %}
+		{% if story.show_desc %}
+			<p>{{ story.description|raw }}</p>
+		{% endif %}
+	</div>
+	{% include "inline_tag_list_fragment.twig" %}
+</div>

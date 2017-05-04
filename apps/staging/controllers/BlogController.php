@@ -50,6 +50,6 @@ class BlogController extends Controller
             ->orderBy('priority ASC')
             ->asArray()
             ->all();
-        return $this->render('index.twig', ['story' => $story, 'side_stories' => $story_list]);
+        return $this->render('index.twig', ['story' => $story, 'side_stories' => $story_list, 'currentYear' => date(Y)]);
     }
 }

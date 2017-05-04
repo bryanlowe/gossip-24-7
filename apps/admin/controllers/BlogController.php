@@ -53,7 +53,7 @@ class BlogController extends Controller
         $model = new Story;
         $model->setScenario(Story::SCENARIO_STORY);
         $model->attributes = $story_values;
-        $model->show_desc = 1;
+        $model->show_desc = ($story_values['description'] != "") ? 1 : 0;
         $result = $model->save();
         $errors = $model->getErrors();
         if($result){

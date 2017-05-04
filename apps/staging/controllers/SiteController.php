@@ -97,7 +97,7 @@ class SiteController extends Controller
 
             $story_list = $this->formatStoryList($story_list);
             if(count($story_list) > 0 || count($main_story) > 0){
-                return $this->render('index.twig', ['story_list' => $story_list, 'main_story' => $main_story]);
+                return $this->render('index.twig', ['story_list' => $story_list, 'main_story' => $main_story, 'currentYear' => date(Y)]);
             } else {
                 return $this->render('index.twig');
             }

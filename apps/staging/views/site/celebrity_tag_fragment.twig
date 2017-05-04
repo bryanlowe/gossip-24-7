@@ -1,0 +1,8 @@
+<span style="color: #000;">
+	<a data-featherlight="#tag-id-{{ tag.story_tag_id }}" style="text-decoration: none; cursor: pointer;">
+		<i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> {{ tag.tag_name }}
+	</a>
+</span>
+<span class="hide">
+	<div id="tag-id-{{ tag.story_tag_id }}">{{ tag.description|raw }}</div>
+</span>

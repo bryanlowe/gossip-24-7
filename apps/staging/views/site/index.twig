@@ -49,6 +49,7 @@ h3 a.title:hover, h4 a.title:hover {
 	margin: auto;
 }
 </style>
+{% set story_type = {'MAIN': 1,'FEATURED_HORIZONTAL': 2,'FEATURED_VERTICAL': 3,'SIDE': 4,'ADVERTISEMENT': 5} %}
 <div class="news-paper">
 	<div id="site-header" class="header">
 		<div class="header-left">
@@ -60,51 +61,9 @@ h3 a.title:hover, h4 a.title:hover {
 	</div>
 	<div class="clearfix"><br /></div>
 	{% if main_story %}
+		{% set story = main_story %}
 		<div class="main-content">		
-			<div class="col-lg-12 total-news">
-				<h3><a href="{{ main_story.link }}" class="title" target="_blank">{{ main_story.title|raw }}</a></h3>
-				<div class="clearfix"></div>
-				<div class="conference-slider">
-					{% for image in main_story.storyImage %}
-						{% if image.order == 0 %}
-							<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" class="img-responsive" alt="">
-						{% endif %}
-					{% endfor %}
-					{% if main_story.show_desc %}
-						<p>{{ main_story.description|raw }}</p>
-					{% endif %}
-				</div>
-			</div>
-			{% if main_story.tags|length > 0 %}	
-				<div class="inline">
-					{% for tag in main_story.tags %}
-						<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#tag-id-{{ tag.story_tag_id }}">{{ tag.tag_name }}</a></span>
-					{% endfor %}
-				</div>
-				<div class="hide">
-					{% for tag in main_story.tags %}
-						<div id="tag-id-{{ tag.story_tag_id }}">{{ tag.description }}</div> 
-					{% endfor %}
-				</div>
-			{% endif %}
-			{% if main_story.audio|length > 0 %}
-				{% for audio in main_story.audio %}
-					<div class="block">
-						<span style="color: #000;"><i class="fa fa-volume-up fa-fw" style="color: #cf0000;"></i> <a data-audiocontainer="#audio-id-{{ audio.story_audio_id }}">Listen</a></span>
-					</div>
-					<div id="audio-id-{{ audio.story_audio_id }}" style="display: none;">
-						<p class="text-center"><audio controls><source src="http://media.gossip247.com/story/{{ audio.story_id }}/audio/{{ audio.audio_name }}" type="audio/mpeg">Your browser does not support the audio element.</audio></p> 
-					</div>
-				{% endfor %}
-			{% endif %}	
-			{% if main_story.video %}
-				<div class="block">
-					<span style="color: #000;"><i class="fa fa-video-camera fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#video-id-{{ main_story.video.story_video_id }}">Watch</a></span>
-				</div>
-				<div class="hide">
-					<div id="video-id-{{ main_story.video.story_video_id }}">{{ main_story.video.video_html|raw }}</div> 
-				</div>
-			{% endif %}	
+			{% include "main_story_fragment.twig" %}
 			<div class="clearfix"></div>
 		</div>
 	{% endif %}
@@ -114,108 +73,20 @@ h3 a.title:hover, h4 a.title:hover {
 			{% if story_list.featured_list|length > 0 and story_list.side_list|length > 0 %}
 				<div class="col-md-8" style="padding-left: 0; padding-right: 0;">
 					<div class="world-news">
-						{% for story in story_list.featured_list %}
+						{% for stories in story_list.featured_list %}
 							<div class="world-news-grids">
 								<!-- starting horizontal list of featured stories ROW {{loop.index}} -->
-								{% if story.featured_list_h|length > 0 %}
-									{% for story_h in story.featured_list_h %}
-										<div class="world-news-grid-midsize">
-											{% if story_h.story_size != 5 %}
-												<h3><a href="{{ story_h.link }}" target="_blank" class="title">{{ story_h.title|raw }}</a></h3>
-											{% endif %}
-											<div>
-											{% if story_h.story_size != 5 %}
-												{% for image in story_h.storyImage %}
-													{% if loop.index < 3 %}
-														<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" class="img-responsive" alt="">
-													{% endif %}
-												{% endfor %}
-											{% endif %}
-												{% if story_h.show_desc %}
-													<p>{{ story_h.description|raw }}</p>
-												{% endif %}
-											</div>
-											{% if story_h.tags|length > 0 %}	
-												<div class="inline">
-													{% for tag in story_h.tags %}
-														<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#tag-id-{{ tag.story_tag_id }}">{{ tag.tag_name }}</a></span>
-													{% endfor %}
-												</div>
-												<div class="hide">
-													{% for tag in story_h.tags %}
-														<div id="tag-id-{{ tag.story_tag_id }}">{{ tag.description }}</div> 
-													{% endfor %}
-												</div>
-											{% endif %}
-											{% if story_h.audio|length > 0 %}
-												{% for audio in story_h.audio %}
-													<div class="block">
-														<span style="color: #000;"><i class="fa fa-volume-up fa-fw" style="color: #cf0000;"></i> <a data-audiocontainer="#audio-id-{{ audio.story_audio_id }}">Listen</a></span>
-													</div>
-													<div id="audio-id-{{ audio.story_audio_id }}" style="display: none;">
-														<p class="text-center"><audio controls><source src="http://media.gossip247.com/story/{{ audio.story_id }}/audio/{{ audio.audio_name }}" type="audio/mpeg">Your browser does not support the audio element.</audio></p> 
-													</div>
-												{% endfor %}
-											{% endif %}	
-											{% if story_h.video %}
-												<div class="block">
-													<span style="color: #000;"><i class="fa fa-video-camera fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#video-id-{{ story_h.video.story_video_id }}">Watch</a></span>
-												</div>
-												<div class="hide">
-													<div id="video-id-{{ story_h.video.story_video_id }}">{{ story_h.video.video_html|raw }}</div> 
-												</div>
-											{% endif %}
-										</div>
+								{% if stories.featured_list_h|length > 0 %}
+									{% for story in stories.featured_list_h %}
+										{% include "featured_horizontal_story_fragment.twig" %}
 										<div class="clearfix"></div>
 									{% endfor %}
 								{% endif %}
 
 								<!-- starting vertical list of featured stories ROW {{loop.index}} -->
-								{% if story.featured_list_v|length > 0 %}
-									{% for story_v in story.featured_list_v %}
-										<div class="world-news-grid">
-											<h4><a href="{{ story_v.link }}" target="_blank" class="title">{{ story_v.title|raw }}</a></h4>
-											<div>
-												{% for image in story_v.storyImage %}
-													{% if image.order == 0 %}
-														<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" class="img-responsive" alt="">
-													{% endif %}
-												{% endfor %}
-												{% if story_v.show_desc %}
-													<p>{{ story_v.description|raw }}</p>
-												{% endif %}
-											</div>
-											{% if story_v.tags|length > 0 %}	
-												<div class="block">
-													{% for tag in story_v.tags %}
-														<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#tag-id-{{ tag.story_tag_id }}">{{ tag.tag_name }}</a></span><br />
-													{% endfor %}
-												</div>
-												<div class="hide">
-													{% for tag in story_v.tags %}
-														<div id="tag-id-{{ tag.story_tag_id }}">{{ tag.description }}</div> 
-													{% endfor %}
-												</div>
-											{% endif %}
-											{% if story_v.audio|length > 0 %}
-												{% for audio in story_v.audio %}
-													<div class="block">
-														<span style="color: #000;"><i class="fa fa-volume-up fa-fw" style="color: #cf0000;"></i> <a data-audiocontainer="#audio-id-{{ audio.story_audio_id }}">Listen</a></span>
-													</div>
-													<div id="audio-id-{{ audio.story_audio_id }}" style="display: none;">
-														<p class="text-center"><audio controls><source src="http://media.gossip247.com/story/{{ audio.story_id }}/audio/{{ audio.audio_name }}" type="audio/mpeg">Your browser does not support the audio element.</audio></p>
-													</div>
-												{% endfor %}
-											{% endif %}	
-											{% if story_v.video %}
-												<div class="block">
-													<span style="color: #000;"><i class="fa fa-video-camera fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#video-id-{{ story_v.video.story_video_id }}" style="font-weight: normal; color: #000;">Watch</a></span>
-												</div>
-												<div class="hide">
-													<div id="video-id-{{ story_v.video.story_video_id }}">{{ story_v.video.video_html|raw }}</div> 
-												</div>
-											{% endif %}
-										</div>
+								{% if stories.featured_list_v|length > 0 %}
+									{% for story in stories.featured_list_v %}
+										{% include "featured_vertical_story_fragment.twig" %}
 										{% if loop.index % 2 == 0 %}
 											<div class="clearfix"></div>
 										{% endif %}
@@ -229,51 +100,15 @@ h3 a.title:hover, h4 a.title:hover {
 
 				<div class="col-md-4" style="padding: 0; padding-left: 5px;">
 					<div class="world-news-grids">
-						{% for side_story in story_list.side_list %}
+						{% for story in story_list.side_list %}
 							<!-- starting side story ROW {{loop.index}} -->
 							<div class="world-news-side">
-								<h4><a href="{{ side_story.link }}" target="_blank" class="title">{{ side_story.title|raw }}</a></h4>
-								<div>
-									{% for image in side_story.storyImage %}
-										{% if image.order == 0 %}
-											<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" class="img-responsive" alt="">
-										{% endif %}
-									{% endfor %}
-									{% if side_story.show_desc %}
-										<p>{{ side_story.description|raw }}</p>
-									{% endif %}
+								<div style="background-color: #e3e3e3; overflow:hidden; padding: 3px 0;">
+									{% include "side_story_fragment.twig" %}
+									<hr style="border: 1px solid #000; margin: 0;">
 								</div>
-								{% if side_story.tags|length > 0 %}	
-									<div class="inline">
-										{% for tag in side_story.tags %}
-											<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#tag-id-{{ tag.story_tag_id }}">{{ tag.tag_name }}</a></span><br />
-										{% endfor %}
-									</div>
-									<div class="hide">
-										{% for tag in side_story.tags %}
-											<div id="tag-id-{{ tag.story_tag_id }}">{{ tag.description }}</div> 
-										{% endfor %}
-									</div>
-								{% endif %}
-								{% if side_story.audio|length > 0 %}
-									{% for audio in side_story.audio %}
-										<div class="block">
-											<span style="color: #000;"><i class="fa fa-volume-up fa-fw" style="color: #cf0000;"></i> <a data-audiocontainer="#audio-id-{{ audio.story_audio_id }}">Listen</a></span>
-										</div>
-										<div id="audio-id-{{ audio.story_audio_id }}" style="display: none;">
-											<p class="text-center"><audio controls><source src="http://media.gossip247.com/story/{{ audio.story_id }}/audio/{{ audio.audio_name }}" type="audio/mpeg">Your browser does not support the audio element.</audio></p>
-										</div>
-									{% endfor %}
-								{% endif %}	
-								{% if side_story.video %}
-									<div class="block">
-										<span style="color: #000;"><i class="fa fa-video-camera fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#video-id-{{ side_story.video.story_video_id }}">Watch</a></span>
-									</div>
-									<div class="hide">
-										<div id="video-id-{{ side_story.video.story_video_id }}">{{ side_story.video.video_html|raw }}</div> 
-									</div>
-								{% endif %}
 							</div>
+							<div class="clearfix"></div>
 						{% endfor %}
 						<div class="clearfix"></div>
 					</div>
@@ -282,104 +117,20 @@ h3 a.title:hover, h4 a.title:hover {
 
 			{% if story_list.featured_list|length > 0 and story_list.side_list|length == 0 %}
 				<div class="world-news">
-					{% for story in story_list.featured_list %}
+					{% for stories in story_list.featured_list %}
 						<div class="world-news-grids">
 							<!-- starting horizontal list of featured stories ROW {{loop.index}} -->
-							{% if story.featured_list_h|length > 0 %}
-								{% for story_h in story.featured_list_h %}
-									<div class="world-news-grid-midsize">
-										<h3><a href="{{ story_h.link }}" target="_blank" class="title">{{ story_h.title|raw }}</a></h3>
-										<div>
-											{% for image in story_h.storyImage %}
-												{% if loop.index < 3 %}
-													<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" class="img-responsive" alt="">
-												{% endif %}
-											{% endfor %}
-											{% if story_h.show_desc %}
-												<p>{{ story_h.description|raw }}</p>
-											{% endif %}
-										</div>
-										{% if story_h.tags|length > 0 %}	
-											<div class="inline">
-												{% for tag in story_h.tags %}
-													<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#tag-id-{{ tag.story_tag_id }}">{{ tag.tag_name }}</a></span>
-												{% endfor %}
-											</div>
-											<div class="hide">
-												{% for tag in story_h.tags %}
-													<div id="tag-id-{{ tag.story_tag_id }}">{{ tag.description }}</div> 
-												{% endfor %}
-											</div>
-										{% endif %}
-										{% if story_h.audio|length > 0 %}
-											{% for audio in story_h.audio %}
-												<div class="block">
-													<span style="color: #000;"><i class="fa fa-volume-up fa-fw" style="color: #cf0000;"></i> <a data-audiocontainer="#audio-id-{{ audio.story_audio_id }}">Listen</a></span>
-												</div>
-												<div id="audio-id-{{ audio.story_audio_id }}" style="display: none;">
-													<p class="text-center"><audio controls><source src="http://media.gossip247.com/story/{{ audio.story_id }}/audio/{{ audio.audio_name }}" type="audio/mpeg">Your browser does not support the audio element.</audio></p>
-												</div>
-											{% endfor %}
-										{% endif %}	
-										{% if story_h.video %}
-											<div class="block">
-												<span style="color: #000;"><i class="fa fa-video-camera fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#video-id-{{ story_h.video.story_video_id }}">Watch</a></span>
-											</div>
-											<div class="hide">
-												<div id="video-id-{{ story_h.video.story_video_id }}">{{ story_h.video.video_html|raw }}</div> 
-											</div>
-										{% endif %}
-									</div>
+							{% if stories.featured_list_h|length > 0 %}
+								{% for story in stories.featured_list_h %}
+									{% include "featured_horizontal_story_fragment.twig" %}
 									<div class="clearfix"></div>
 								{% endfor %}
 							{% endif %}
 
 							<!-- starting vertical list of featured stories ROW {{loop.index}} -->
-							{% if story.featured_list_v|length > 0 %}
-								{% for story_v in story.featured_list_v %}
-									<div class="world-news-grid">
-										<h4><a href="{{ story_v.link }}" target="_blank" class="title">{{ story_v.title|raw }}</a></h4>
-										<div>
-											{% for image in story_v.storyImage %}
-												{% if image.order == 0 %}
-													<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" class="img-responsive" alt="">
-												{% endif %}
-											{% endfor %}
-											{% if story_v.show_desc %}
-												<p>{{ story_v.description|raw }}</p>
-											{% endif %}
-										</div>
-										{% if story_v.tags|length > 0 %}	
-											<div class="block">
-												{% for tag in story_v.tags %}
-													<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#tag-id-{{ tag.story_tag_id }}">{{ tag.tag_name }}</a></span><br />
-												{% endfor %}
-											</div>
-											<div class="hide">
-												{% for tag in story_v.tags %}
-													<div id="tag-id-{{ tag.story_tag_id }}">{{ tag.description }}</div> 
-												{% endfor %}
-											</div>
-										{% endif %}
-										{% if story_v.audio|length > 0 %}
-											{% for audio in story_v.audio %}
-												<div class="block">
-													<span style="color: #000;"><i class="fa fa-volume-up fa-fw" style="color: #cf0000;"></i> <a data-audiocontainer="#audio-id-{{ audio.story_audio_id }}">Listen</a></span>
-												</div>
-												<div id="audio-id-{{ audio.story_audio_id }}" style="display: none;">
-													<p class="text-center"><audio controls><source src="http://media.gossip247.com/story/{{ audio.story_id }}/audio/{{ audio.audio_name }}" type="audio/mpeg">Your browser does not support the audio element.</audio></p>
-												</div>
-											{% endfor %}
-										{% endif %}	
-										{% if story_v.video %}
-											<div class="block">
-												<span style="color: #000;"><i class="fa fa-video-camera fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#video-id-{{ story_v.video.story_video_id }}">Watch</a></span>
-											</div>
-											<div class="hide">
-												<div id="video-id-{{ story_v.video.story_video_id }}">{{ story_v.video.video_html|raw }}</div> 
-											</div>
-										{% endif %}
-									</div>
+							{% if stories.featured_list_v|length > 0 %}
+								{% for story in stories.featured_list_v %}
+									{% include "featured_vertical_story_fragment.twig" %}
 									{% if loop.index % 3 == 0 %}
 										<div class="clearfix"></div>
 									{% endif %}
@@ -395,51 +146,12 @@ h3 a.title:hover, h4 a.title:hover {
 			{% if story_list.side_list|length > 0 and story_list.featured_list|length == 0 %}
 				<div class="world-news">
 					<div class="world-news-grids">
-						{% for side_story in story_list.side_list %}
+						{% for story in story_list.side_list %}
 							<!-- starting side story ROW {{loop.index}} -->
 							<div class="world-news-grid">
-								<h4><a href="{{ side_story.link }}" target="_blank" class="title">{{ side_story.title|raw }}</a></h4>
-								<div>
-									{% for image in side_story.storyImage %}
-										{% if image.order == 0 %}
-											<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" class="img-responsive" alt="">
-										{% endif %}
-									{% endfor %}
-									{% if side_story.show_desc %}
-										<p>{{ side_story.description|raw }}</p>
-									{% endif %}
-								</div>
-								{% if side_story.tags|length > 0 %}	
-									<div class="inline">
-										{% for tag in side_story.tags %}
-											<span style="color: #000;"><i class="fa fa-info-circle fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#tag-id-{{ tag.story_tag_id }}">{{ tag.tag_name }}</a></span><br />
-										{% endfor %}
-									</div>
-									<div class="hide">
-										{% for tag in side_story.tags %}
-											<div id="tag-id-{{ tag.story_tag_id }}">{{ tag.description }}</div> 
-										{% endfor %}
-									</div>
-								{% endif %}
-								{% if side_story.audio|length > 0 %}
-									{% for audio in side_story.audio %}
-										<div class="block">
-											<span style="color: #000;"><i class="fa fa-volume-up fa-fw" style="color: #cf0000;"></i> <a data-audiocontainer="#audio-id-{{ audio.story_audio_id }}">Listen</a></span>
-										</div>
-										<div id="audio-id-{{ audio.story_audio_id }}" style="display: none;">
-											<p class="text-center"><audio controls><source src="http://media.gossip247.com/story/{{ audio.story_id }}/audio/{{ audio.audio_name }}" type="audio/mpeg">Your browser does not support the audio element.</audio></p>
-										</div>
-									{% endfor %}
-								{% endif %}	
-								{% if side_story.video %}
-									<div class="block">
-										<span style="color: #000;"><i class="fa fa-video-camera fa-fw" style="color: #cf0000;"></i> <a data-featherlight="#video-id-{{ side_story.video.story_video_id }}">Watch</a></span>
-									</div>
-									<div class="hide">
-										<div id="video-id-{{ side_story.video.story_video_id }}">{{ side_story.video.video_html|raw }}</div> 
-									</div>
-								{% endif %}
+								{% include "side_story_fragment.twig" %}
 							</div>
+
 							{% if loop.index % 4 == 0 %}
 								<div class="clearfix"></div>
 							{% endif %}
@@ -452,7 +164,7 @@ h3 a.title:hover, h4 a.title:hover {
 	{% endif %}
 	<div class="text-center" style="margin-top: 25px;">
 		<div class="copyright text-center">
-			<p>Gossip 24/7 &copy; 2017 All rights reserved</p>
+			<p>Gossip 24/7 &copy; {{ currentYear }} All rights reserved</p>
 		</div>
 	</div>
 </div>
