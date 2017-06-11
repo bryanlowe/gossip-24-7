@@ -23,7 +23,8 @@ class AppAsset extends AssetBundle
         '/css/popuo-box.css',
         '/css/font-awesome.min.css',
         '/css/style.css',
-        '//cdn.rawgit.com/noelboss/featherlight/1.5.0/release/featherlight.min.css'
+        '//cdn.rawgit.com/noelboss/featherlight/1.5.0/release/featherlight.min.css',
+        '/css/custom-site.css'
     ];
     public $js = [
         '/js/jquery.min.js',

@@ -11,7 +11,7 @@ function saveStory(){
     statusApp.showPleaseWait();
     var values = {};
     values['title'] = $('[name="title"]').val();
-    values['link'] = 'N/A';
+    values['link'] = '';
     values['description'] = $('[name="description"]').val();
     values['story_size'] = $('[name="story_size"]').val();
     values['visible'] = 0;

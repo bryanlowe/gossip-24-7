@@ -254,6 +254,7 @@ class StorylistController extends Controller
         $model = Story::findOne($story_values['story_id']);
         $model->setScenario(Story::SCENARIO_STORY);
         $model->attributes = $story_values;
+        $model->link = ($story_values['link'] == "") ? 'http://www.gossip247.com/blog/?story_id='.$model->getPrimaryKey() : $story_values['link'];
         echo json_encode(['save_success' => $model->save(true, ['title','story_size','link','description','show_desc']), 'errors' => $model->getErrors()]);
     }
 

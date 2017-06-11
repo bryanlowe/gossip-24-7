@@ -15,21 +15,26 @@ use yii\web\AssetBundle;
  */
 class AppAsset extends AssetBundle
 {
-    public $basePath = '@webroot/apps/production/assets';
-    public $baseUrl = '@web/apps/production';
+    public $basePath = '@webroot/apps/production/web';
+    public $baseUrl = '@web/apps/production/web';
     public $css = [
-        '/apps/production/web/css/flexslider.css',
-        '/apps/production/web/css/bootstrap.css',
-        '/apps/production/web/css/popuo-box.css',
-        '/apps/production/web/css/style.css'
+        'css/flexslider.css',
+        'css/bootstrap.css',
+        'css/popuo-box.css',
+        'css/font-awesome.min.css',
+        'css/style.css',
+        '//cdn.rawgit.com/noelboss/featherlight/1.5.0/release/featherlight.min.css',
+        'css/custom-site.css'
     ];
     public $js = [
-        '/apps/production/web/js/jquery.min.js',
-        '/apps/production/web/js/jquery.flexisel.js',
-        '/apps/production/web/js/jquery.flexslider.js',
-        '/apps/production/web/js/jquery.leanModal.min.js',
-        '/apps/production/web/js/jquery.magnific-popup.js',
-        '/apps/production/web/js/responsiveslides.min.js'
+        'js/jquery.min.js',
+        'js/jquery.flexisel.js',
+        'js/jquery.flexslider.js',
+        'js/jquery.leanModal.min.js',
+        'js/jquery.magnific-popup.js',
+        'js/responsiveslides.min.js',
+        '//cdn.rawgit.com/noelboss/featherlight/1.5.0/release/featherlight.min.js',
+        'js/scripts.js'
     ];
     public $depends = [
         'yii\web\YiiAsset'

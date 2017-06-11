@@ -1,0 +1,17 @@
+<div class="col-lg-12 total-news">
+	<h3><a href="{{ story.link }}" class="title" target="_blank">{{ story.title|raw }}</a></h3>
+	<div class="clearfix"></div>
+	<div class="conference-slider">
+		{% for image in story.storyImage %}
+			{% if image.order == 0 %}
+				<img src="http://media.gossip247.com/story/{{ image.story_id }}/images/{{ image.image_name }}" class="img-responsive" alt="">
+			{% endif %}
+		{% endfor %}
+		{% if story.show_desc %}
+			<p>{{ story.description|raw }}</p>
+		{% endif %}
+	</div>
+</div>
+<div class="col-md-12">
+	{% include "inline_tag_list_fragment.twig" %}
+</div>

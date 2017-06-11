@@ -102,7 +102,7 @@ class SiteController extends Controller
                 return $this->render('index.twig');
             }
         } else {
-            return $this->render('/sitedown/index.twig');
+            return $this->render('/sitedown/index.twig', ['currentYear' => date(Y)]);
         }
     }
 
@@ -110,7 +110,7 @@ class SiteController extends Controller
      * Checks if the site is down. If so, show maintenance page and return true. Return false otherwise
      */
     private function siteDown(){
-        $siteStatus = SiteConfig::findOne(['site_config_id' => 2]);
+        $siteStatus = SiteConfig::findOne(['site_config_id' => SiteConfig::STAGING_SITE]);
         if($siteStatus->maintenance_mode){
             return true;
         }

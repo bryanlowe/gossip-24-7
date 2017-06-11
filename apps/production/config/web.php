@@ -6,10 +6,11 @@ $config = [
     'id' => 'gossip-frontend',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'layout' => 'main.twig',
     'components' => [
         'assetManager' => [
             'basePath' => '@webroot/apps/production/assets',
-            'baseUrl' => '@web/apps/production/assets'
+            'baseUrl' => '@web/apps/production/assets',
         ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -42,19 +43,34 @@ $config = [
             ],
         ],
         'db' => require(__DIR__ . '/db.php'),
-        'title' => 'Gossip 24/7',
+        'view' => [
+            'class' => 'yii\web\View',
+            'renderers' => [
+                'twig' => [
+                    'class' => 'yii\twig\ViewRenderer',
+                    'cachePath' => '@runtime/Twig/cache',
+                    // Array of twig options:
+                    'options' => [
+                        'auto_reload' => true,
+                    ],
+                    'globals' => [
+                        'html' => '\yii\helpers\Html'
+                    ],
+                    'uses' => ['yii\bootstrap'],
+                ]
+            ]
+        ],
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
                 'home' => 'site/index',
-                'about' => 'site/about',
-                'contact' => 'site/contact',
                 'login' => 'site/login',
+                'logout' => 'site/logout',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
                 '<controller:\w+>/<action:\w+>' => '<controller>/<action>'
-            ],
+            ]
         ]
     ],
     'params' => $params,

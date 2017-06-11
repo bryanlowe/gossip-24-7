@@ -57,7 +57,7 @@ class BlogController extends Controller
         $result = $model->save();
         $errors = $model->getErrors();
         if($result){
-            $model->link = ($story_values['link'] == "") ? 'http://www.gossip247.com/blog/'.$model->getPrimaryKey() : $story_values['link'];
+            $model->link = ($story_values['link'] == "") ? 'http://www.gossip247.com/blog/?story_id='.$model->getPrimaryKey() : $story_values['link'];
             $model->save();
             $storyPriority = new StoryPriority;
             $storyPriority->setScenario(StoryPriority::SCENARIO_STORY_PRIORITY);

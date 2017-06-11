@@ -45,7 +45,7 @@
 	    public function rules() {
 	        return [
 	            // required
-	            [['title', 'link', 'story_size'], 'required', 'on' => self::SCENARIO_STORY],
+	            [['title', 'story_size'], 'required', 'on' => self::SCENARIO_STORY],
 	            [['visible'], 'required', 'on' => self::SCENARIO_STORY_VISIBILITY],
 	            [['visible'], 'integer', 'on' => self::SCENARIO_STORY_VISIBILITY]
 	        ];
