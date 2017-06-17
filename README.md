@@ -2,7 +2,7 @@ Website Editing Guide
 
 ##################################
 Site Folders:
-Production - /home/gossip24/public_html/apps/production
+Production - /home/gossip24/public_html/apps/production\n
 Staging - /home/gossip24/public_html/apps/staging
 Admin - /home/gossip24/public_html/apps/admin
 
